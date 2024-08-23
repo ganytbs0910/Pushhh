@@ -1,0 +1,37 @@
+{
+  "project_info": {
+    "project_number": "628459095197",
+    "firebase_url": "https://mon-c8c38-default-rtdb.firebaseio.com",
+    "project_id": "mon-c8c38",
+    "storage_bucket": "mon-c8c38.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:628459095197:ios:540c43ca135e1315828074",
+        "android_client_info": {
+          "package_name": "com.DefaultCompany.MonTest.Ham"
+        }
+      },
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZNAJpOOx4nNnZuj0vWDFHVwYZNWuzQJ4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 0
+        },
+        "appinvite_service": {
+          "status": 1
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "628459095197-11agabe8ga0frdjgad56hse941vqcefe.apps.googleusercontent.com"
+        }
+      ]
+    }
+  ],
+  "configuration_version": "1"
+}

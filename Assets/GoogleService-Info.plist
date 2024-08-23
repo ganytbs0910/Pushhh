@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyAZNAJpOOx4nNnZuj0vWDFHVwYZNWuzQJ4</string>
+	<key>GCM_SENDER_ID</key>
+	<string>628459095197</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.DefaultCompany.MonTest.Ham</string>
+	<key>PROJECT_ID</key>
+	<string>mon-c8c38</string>
+	<key>STORAGE_BUCKET</key>
+	<string>mon-c8c38.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:628459095197:ios:540c43ca135e1315828074</string>
+	<key>DATABASE_URL</key>
+	<string>https://mon-c8c38-default-rtdb.firebaseio.com</string>
+	
+	<key>CLIENT_ID</key>
+	<string>628459095197-11agabe8ga0frdjgad56hse941vqcefe.apps.googleusercontent.com</string>
+</dict>
+</plist>

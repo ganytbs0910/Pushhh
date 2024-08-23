@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using GoogleMobileAds.Api;
+using TMPro;
 
 public class Interstitial : MonoBehaviour
 {
-    [SerializeField] private Button showInterstitialAdButton;
+    [SerializeField] private TMP_Text inforText;
     private InterstitialAd interstitial;
 
-    void Awake()
+    void Start()
     {
-        showInterstitialAdButton.onClick.AddListener(() => showInterstitialAd());
+        loadInterstitialAd();
     }
+
     public void loadInterstitialAd()
     {
-
 #if UNITY_ANDROID
     string adUnitId = "ca-app-pub-3940256099942544/1033173712";
 #elif UNITY_IPHONE
@@ -23,31 +24,28 @@ public class Interstitial : MonoBehaviour
 #else
         string adUnitId = "unexpected_platform";
 #endif
-
         InterstitialAd.Load(adUnitId, new AdRequest(),
-          (InterstitialAd ad, LoadAdError loadAdError) =>
-          {
-              if (loadAdError != null)
-              {
-                  // Interstitial ad failed to load with error
-                  interstitial.Destroy();
-                  return;
-              }
-              else if (ad == null)
-              {
-                  // Interstitial ad failed to load.
-                  return;
-              }
-              ad.OnAdFullScreenContentClosed += () =>
-              {
-                  HandleOnAdClosed();
-              };
-              ad.OnAdFullScreenContentFailed += (AdError error) =>
-          {
-              HandleOnAdClosed();
-          };
-              interstitial = ad;
-          });
+        (InterstitialAd ad, LoadAdError loadAdError) =>
+        {
+            if (loadAdError != null)
+            {
+                interstitial.Destroy();
+                return;
+            }
+            else if (ad == null)
+            {
+                return;
+            }
+            ad.OnAdFullScreenContentClosed += () =>
+            {
+                HandleOnAdClosed();
+            };
+            ad.OnAdFullScreenContentFailed += (AdError error) =>
+            {
+                HandleOnAdClosed();
+            };
+            interstitial = ad;
+        });
     }
 
     private void HandleOnAdClosed()
@@ -58,13 +56,21 @@ public class Interstitial : MonoBehaviour
 
     public void showInterstitialAd()
     {
-        if (interstitial != null && interstitial.CanShowAd())
+        if (interstitial != null)
         {
-            interstitial.Show();
+            if (interstitial.CanShowAd())
+            {
+                inforText.text = "Successsssss";
+                interstitial.Show();
+            }
+            else
+            {
+                inforText.text = "CanShowAd is not ready yet";
+            }
         }
         else
         {
-            Debug.Log("Interstitial Ad not load");
+            inforText.text = "interstitial is null";
         }
     }
 }

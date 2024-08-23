@@ -7,7 +7,6 @@ using TMPro;
 
 public class Interstitial : MonoBehaviour
 {
-    [SerializeField] private TMP_Text inforText;
     private InterstitialAd interstitial;
 
     void Start()
@@ -60,17 +59,8 @@ public class Interstitial : MonoBehaviour
         {
             if (interstitial.CanShowAd())
             {
-                inforText.text = "Successsssss";
                 interstitial.Show();
             }
-            else
-            {
-                inforText.text = "CanShowAd is not ready yet";
-            }
-        }
-        else
-        {
-            inforText.text = "interstitial is null";
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections;
 using EnhancedUI.EnhancedScroller;
 using EnhancedUI;
 using System.Linq;
+using TMPro;
 
 namespace EnhancedScrollerDemos.SnappingDemo
 {
@@ -15,12 +16,13 @@ namespace EnhancedScrollerDemos.SnappingDemo
 
         public float minVelocity;
         public float maxVelocity;
-        public int sevenIndex = 6;
         public Sprite[] slotSprites;
         public Button spinButton;
         public float spinInterval = 0.4f;
         public float spinDuration = 3f;
-        public float winProbability = 0.1f; // 当選確率（0.1 = 10%）
+        public float winProbability = 0.1f;
+
+        public TMP_Text resultText;
 
         void Awake()
         {
@@ -48,26 +50,22 @@ namespace EnhancedScrollerDemos.SnappingDemo
             StartCoroutine(SpinAll());
         }
 
-        public void SpinButton_OnClick2()
-        {
-            StartCoroutine(SpinAll());
-        }
-
         private IEnumerator SpinAll()
         {
             _snapCount = 0;
             spinButton.interactable = false;
+            resultText.text = "スピン中...";
 
             bool isWin = Random.value < winProbability;
 
             for (int i = 0; i < _slotControllers.Length; i++)
             {
-                StartCoroutine(SpinSlot(_slotControllers[i], isWin));
+                StartCoroutine(SpinSlot(_slotControllers[i], isWin, i + 1));
                 yield return new WaitForSeconds(spinInterval);
             }
         }
 
-        private IEnumerator SpinSlot(SlotController slotController, bool isWin)
+        private IEnumerator SpinSlot(SlotController slotController, bool isWin, int slotNumber)
         {
             float elapsedTime = 0f;
             while (elapsedTime < spinDuration)
@@ -77,9 +75,11 @@ namespace EnhancedScrollerDemos.SnappingDemo
                 yield return null;
             }
 
-            int finalIndex = isWin ? sevenIndex : Random.Range(0, slotSprites.Length);
+            int finalIndex = isWin ? 6 : Random.Range(0, slotSprites.Length);
             slotController.scroller.JumpToDataIndex(finalIndex);
-            CheckResult();
+
+            int displayNumber = finalIndex + 1;
+            Debug.Log($"スロット {slotNumber} の結果: {displayNumber}");
         }
 
         private void ScrollerSnapped(EnhancedScroller scroller, int cellIndex, int dataIndex, EnhancedScrollerCellView cellView)
@@ -90,21 +90,39 @@ namespace EnhancedScrollerDemos.SnappingDemo
             {
                 CheckResult();
                 spinButton.interactable = true;
+                resultText.text = "スピン終了";
             }
         }
 
         private void CheckResult()
         {
-            Debug.Log($"Slot Results: {string.Join(", ", _snappedDataIndices)}");
+            int[] displayNumbers = _snappedDataIndices.Select(i => i + 1).ToArray();
+            Debug.Log($"Slot Results: {string.Join(", ", displayNumbers)}");
 
-            if (_snappedDataIndices.All(index => index == sevenIndex))
+            var s1 = displayNumbers[0];
+            var s2 = displayNumbers[1];
+            var s3 = displayNumbers[2];
+
+            string result;
+
+            if (s1 == s2 && s2 == s3)
             {
-                Debug.Log("7が当選！");
+                if (s1 == 7)
+                {
+                    result = "777が揃いました！大当たり！";
+                }
+                else
+                {
+                    result = $"{s1}が3つ揃いました！当たり！";
+                }
             }
             else
             {
-                Debug.Log("はずれ");
+                result = $"結果: {s1}, {s2}, {s3}。はずれ！";
             }
+
+            Debug.Log(result);
+            resultText.text = result;
         }
     }
 }

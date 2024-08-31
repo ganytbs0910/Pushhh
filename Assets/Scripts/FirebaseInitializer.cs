@@ -21,9 +21,7 @@ public class FirebaseInitializer : MonoBehaviour
     {
         try
         {
-            Debug.Log("Starting Firebase initialization");
             await InitializeFirebaseAsync();
-            Debug.Log("Firebase initialization completed");
             await LoadCounterAsync();
             UpdateCounterDisplay();
             incrementButton.onClick.AddListener(IncrementCounter);
@@ -36,33 +34,19 @@ public class FirebaseInitializer : MonoBehaviour
 
     private async UniTask InitializeFirebaseAsync()
     {
-        Debug.Log("Starting Firebase initialization");
         var dependencyStatus = await FirebaseApp.CheckAndFixDependenciesAsync();
-        Debug.Log($"Dependency status: {dependencyStatus}");
         if (dependencyStatus == DependencyStatus.Available)
         {
             try
             {
                 FirebaseApp app = FirebaseApp.DefaultInstance;
-                Debug.Log($"Firebase app initialized: {app.Name}");
-
                 FirebaseDatabase database = FirebaseDatabase.GetInstance(app, databaseUrl);
-                Debug.Log($"Firebase database instance created: {database.App.Name}");
                 dbReference = database.RootReference;
-                Debug.Log($"Database reference set: {dbReference.Key}");
-
-                // データベースの接続状態を確認するリスナーを追加
                 database.RootReference.Child(".info/connected").ValueChanged += (object sender, ValueChangedEventArgs e) =>
                 {
                     bool connected = (bool)e.Snapshot.Value;
-                    Debug.Log($"Firebase connection state changed: {(connected ? "connected" : "disconnected")}");
                 };
-
-                Debug.Log($"Database URL: {database.App.Options.DatabaseUrl}");
-
-                // データベースへの単純な書き込みテスト
                 await database.RootReference.Child("test").SetValueAsync("Connection test");
-                Debug.Log("Test write to database successful");
             }
             catch (Exception ex)
             {
@@ -80,14 +64,10 @@ public class FirebaseInitializer : MonoBehaviour
     {
         try
         {
-            Debug.Log("Starting LoadCounterAsync");
-            Debug.Log($"Database reference: {dbReference.Key}");
             var snapshot = await dbReference.Child("counter").GetValueAsync();
-            Debug.Log($"Snapshot retrieved: {snapshot != null}");
             if (snapshot != null && snapshot.Exists)
             {
                 count = Convert.ToInt32(snapshot.Value);
-                Debug.Log($"Counter value loaded: {count}");
             }
             else
             {
@@ -125,7 +105,6 @@ public class FirebaseInitializer : MonoBehaviour
         try
         {
             await dbReference.Child("counter").SetValueAsync(count);
-            Debug.Log($"Firebase save successful. New count: {count}");
         }
         catch (Exception ex)
         {

@@ -97,7 +97,7 @@ public class FirebaseInitializer : MonoBehaviour
 
     private void UpdateCounterDisplay()
     {
-        counterText.text = $"Count: {count}";
+        counterText.text = $"{count}回";
     }
 
     private async UniTask SaveCounterAsync()

@@ -22,7 +22,6 @@ namespace EnhancedScrollerDemos.SnappingDemo
         public float spinDuration = 3f;
         public float winProbability = 0.1f;
 
-        public TMP_Text resultText;
 
         void Awake()
         {
@@ -53,8 +52,6 @@ namespace EnhancedScrollerDemos.SnappingDemo
         private IEnumerator SpinAll()
         {
             _snapCount = 0;
-            spinButton.interactable = false;
-            resultText.text = "スピン中...";
 
             bool isWin = Random.value < winProbability;
 
@@ -89,8 +86,6 @@ namespace EnhancedScrollerDemos.SnappingDemo
             if (_snapCount == _slotControllers.Length)
             {
                 CheckResult();
-                spinButton.interactable = true;
-                resultText.text = "スピン終了";
             }
         }
 
@@ -122,7 +117,6 @@ namespace EnhancedScrollerDemos.SnappingDemo
             }
 
             Debug.Log(result);
-            resultText.text = result;
         }
     }
 }

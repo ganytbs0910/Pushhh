@@ -22,6 +22,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
         public float spinDuration = 3f;
         public float winProbability = 0.1f;
 
+        private TextMeshProUGUI spinButtonText; // 新しく追加
 
         void Awake()
         {
@@ -34,6 +35,17 @@ namespace EnhancedScrollerDemos.SnappingDemo
                 slotController.scroller.snapping = true;
             }
             spinButton.onClick.AddListener(SpinButton_OnClick);
+
+            // spinButtonのTextMeshProUGUIコンポーネントを取得
+            spinButtonText = spinButton.GetComponentInChildren<TextMeshProUGUI>();
+            if (spinButtonText == null)
+            {
+                Debug.LogError("SpinButtonにTextMeshProUGUIコンポーネントが見つかりません。");
+            }
+            else
+            {
+                SetSpinButtonText("スピンをする！");
+            }
         }
 
         void Start()
@@ -52,6 +64,8 @@ namespace EnhancedScrollerDemos.SnappingDemo
         private IEnumerator SpinAll()
         {
             _snapCount = 0;
+            SetSpinButtonText("スピン中！");
+            spinButton.interactable = false;
 
             bool isWin = Random.value < winProbability;
 
@@ -60,6 +74,12 @@ namespace EnhancedScrollerDemos.SnappingDemo
                 StartCoroutine(SpinSlot(_slotControllers[i], isWin, i + 1));
                 yield return new WaitForSeconds(spinInterval);
             }
+
+            // すべてのスロットのスピンが終わるのを待つ
+            yield return new WaitForSeconds(spinDuration);
+
+            SetSpinButtonText("スピンをする！");
+            spinButton.interactable = true;
         }
 
         private IEnumerator SpinSlot(SlotController slotController, bool isWin, int slotNumber)
@@ -117,6 +137,15 @@ namespace EnhancedScrollerDemos.SnappingDemo
             }
 
             Debug.Log(result);
+        }
+
+        // spinButtonのテキストを設定するヘルパーメソッド
+        private void SetSpinButtonText(string text)
+        {
+            if (spinButtonText != null)
+            {
+                spinButtonText.text = text;
+            }
         }
     }
 }

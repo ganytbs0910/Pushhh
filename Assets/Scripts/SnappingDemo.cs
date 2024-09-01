@@ -13,16 +13,18 @@ namespace EnhancedScrollerDemos.SnappingDemo
         private SlotController[] _slotControllers;
         private int[] _snappedDataIndices;
         private int _snapCount;
-
         public float minVelocity;
         public float maxVelocity;
         public Sprite[] slotSprites;
         public Button spinButton;
+        public Button[] stopButton;
         public float spinInterval = 0.4f;
         public float spinDuration = 3f;
         public float winProbability = 0.1f;
+        public TMP_Text resultText;
+        public bool isAutomaticMode = false;
 
-        private TextMeshProUGUI spinButtonText; // 新しく追加
+        private int[] _predeterminedResult;
 
         void Awake()
         {
@@ -35,17 +37,6 @@ namespace EnhancedScrollerDemos.SnappingDemo
                 slotController.scroller.snapping = true;
             }
             spinButton.onClick.AddListener(SpinButton_OnClick);
-
-            // spinButtonのTextMeshProUGUIコンポーネントを取得
-            spinButtonText = spinButton.GetComponentInChildren<TextMeshProUGUI>();
-            if (spinButtonText == null)
-            {
-                Debug.LogError("SpinButtonにTextMeshProUGUIコンポーネントが見つかりません。");
-            }
-            else
-            {
-                SetSpinButtonText("スピンをする！");
-            }
         }
 
         void Start()
@@ -58,31 +49,53 @@ namespace EnhancedScrollerDemos.SnappingDemo
 
         public void SpinButton_OnClick()
         {
+            DetermineResult();
             StartCoroutine(SpinAll());
+        }
+
+        private void DetermineResult()
+        {
+            bool isWin = Random.value < winProbability;
+            _predeterminedResult = new int[_slotControllers.Length];
+
+            if (isWin)
+            {
+                int winningNumber = Random.Range(0, slotSprites.Length);
+                for (int i = 0; i < _slotControllers.Length; i++)
+                {
+                    _predeterminedResult[i] = winningNumber;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < _slotControllers.Length; i++)
+                {
+                    _predeterminedResult[i] = Random.Range(0, slotSprites.Length);
+                }
+                // 確実に揃わないようにする
+                if (_predeterminedResult.All(x => x == _predeterminedResult[0]))
+                {
+                    _predeterminedResult[_predeterminedResult.Length - 1] = (_predeterminedResult[0] + 1) % slotSprites.Length;
+                }
+            }
+
+            Debug.Log($"Predetermined Result: {string.Join(", ", _predeterminedResult.Select(x => x + 1))}");
         }
 
         private IEnumerator SpinAll()
         {
             _snapCount = 0;
-            SetSpinButtonText("スピン中！");
             spinButton.interactable = false;
-
-            bool isWin = Random.value < winProbability;
+            resultText.text = "スピン中...";
 
             for (int i = 0; i < _slotControllers.Length; i++)
             {
-                StartCoroutine(SpinSlot(_slotControllers[i], isWin, i + 1));
+                StartCoroutine(SpinSlot(_slotControllers[i], _predeterminedResult[i], i + 1));
                 yield return new WaitForSeconds(spinInterval);
             }
-
-            // すべてのスロットのスピンが終わるのを待つ
-            yield return new WaitForSeconds(spinDuration);
-
-            SetSpinButtonText("スピンをする！");
-            spinButton.interactable = true;
         }
 
-        private IEnumerator SpinSlot(SlotController slotController, bool isWin, int slotNumber)
+        private IEnumerator SpinSlot(SlotController slotController, int finalIndex, int slotNumber)
         {
             float elapsedTime = 0f;
             while (elapsedTime < spinDuration)
@@ -92,7 +105,6 @@ namespace EnhancedScrollerDemos.SnappingDemo
                 yield return null;
             }
 
-            int finalIndex = isWin ? 6 : Random.Range(0, slotSprites.Length);
             slotController.scroller.JumpToDataIndex(finalIndex);
 
             int displayNumber = finalIndex + 1;
@@ -106,6 +118,8 @@ namespace EnhancedScrollerDemos.SnappingDemo
             if (_snapCount == _slotControllers.Length)
             {
                 CheckResult();
+                spinButton.interactable = true;
+                resultText.text = "スピン終了";
             }
         }
 
@@ -137,15 +151,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
             }
 
             Debug.Log(result);
-        }
-
-        // spinButtonのテキストを設定するヘルパーメソッド
-        private void SetSpinButtonText(string text)
-        {
-            if (spinButtonText != null)
-            {
-                spinButtonText.text = text;
-            }
+            resultText.text = result;
         }
     }
 }

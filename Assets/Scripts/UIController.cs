@@ -2,24 +2,25 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Runtime.InteropServices;
 using TMPro;
+using EnhancedScrollerDemos.SnappingDemo;
 
 public class UIController : MonoBehaviour
 {
-    [SerializeField] private Button pullButton;
-    [SerializeField] private TMP_Text currentWinningAmount;
-    [SerializeField] private int winningAmount;
+    SnappingDemo snappingDemo;
 
     void Start()
     {
-        //currentWinningAmount.text = winningAmount.ToString();
-        // pullButton.onClick.AddListener(() =>
-        // {
-        //     VibrationController.VibrateHeavy();
-        // });
-    }
-
-    public void AddProbability()
-    {
-
+        snappingDemo = GetComponent<SnappingDemo>();
+        if (snappingDemo != null)
+        {
+            if (snappingDemo.isAutomaticMode == true)
+            {
+                Debug.Log("Automatic Mode is enabled");
+            }
+            else
+            {
+                Debug.Log("Automatic Mode is disabled");
+            }
+        }
     }
 }

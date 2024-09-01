@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SoundManager : MonoBehaviour
+public class AudioManager : MonoBehaviour
 {
     [SerializeField] AudioSource bgmAudioSource;
     [SerializeField] AudioSource seAudioSource;
@@ -18,7 +18,7 @@ public class SoundManager : MonoBehaviour
     public float bgmMasterVolume = 1;
     public float seMasterVolume = 1;
 
-    public static SoundManager Instance { get; private set; }
+    public static AudioManager Instance { get; private set; }
 
     private void Awake()
     {
@@ -33,6 +33,16 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    private static bool CanBGM()
+    {
+        return Settings.instance != null && Settings.instance.IsMusicOn;
+    }
+
+    private static bool CanSound()
+    {
+        return Settings.instance != null && Settings.instance.IsSoundOn;
+    }
+
     void Start()
     {
         bgmMasterVolume = PlayerPrefs.GetFloat("BGMVolume");
@@ -41,12 +51,12 @@ public class SoundManager : MonoBehaviour
         // スライダーの値を設定する
         bgmSilder.value = bgmMasterVolume;
         seSilder.value = seMasterVolume;
-
         PlayBGM(BGMSoundData.BGM.normal);
     }
 
     public void PlayBGM(BGMSoundData.BGM bgm)
     {
+        if (!CanBGM()) return;
         BGMSoundData data = bgmSoundDatas.Find(data => data.bgm == bgm);
         bgmAudioSource.clip = data.audioClip;
         bgmAudioSource.volume = data.volume * bgmMasterVolume * masterVolume;
@@ -55,19 +65,17 @@ public class SoundManager : MonoBehaviour
 
     public void PlaySE(SESoundData.SE se)
     {
+        if (!CanSound()) return;
         SESoundData data = seSoundDatas.Find(data => data.se == se);
         seAudioSource.volume = data.volume * seMasterVolume * masterVolume;
         seAudioSource.PlayOneShot(data.audioClip);
     }
 
-    //スライダーの値が変更された時に呼ばれる
     public void OnSliderValueChange()
     {
-        //スライダーの値をbgmMasterVolumeに代入する
         bgmMasterVolume = bgmSilder.value;
         seMasterVolume = seSilder.value;
 
-        //それを保存する
         PlayerPrefs.SetFloat("BGMVolume", bgmMasterVolume);
         PlayerPrefs.SetFloat("SEVolume", seMasterVolume);
     }

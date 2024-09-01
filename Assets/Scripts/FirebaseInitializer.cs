@@ -9,7 +9,8 @@ using Cysharp.Threading.Tasks;
 public class FirebaseInitializer : MonoBehaviour
 {
     public Button incrementButton;
-    public TextMeshProUGUI counterText;
+    public TextMeshProUGUI allCountText;
+    public TextMeshProUGUI currentWinningAmount;
 
     private int count = 0;
     private DatabaseReference dbReference;
@@ -97,7 +98,8 @@ public class FirebaseInitializer : MonoBehaviour
 
     private void UpdateCounterDisplay()
     {
-        counterText.text = $"{count}回";
+        allCountText.text = $"{count}回";
+        currentWinningAmount.text = $"現在の当選金額: {(int)(count * 1.5f)}円";
     }
 
     private async UniTask SaveCounterAsync()

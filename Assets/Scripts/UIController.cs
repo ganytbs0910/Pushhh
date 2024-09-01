@@ -3,24 +3,68 @@ using UnityEngine.UI;
 using System.Runtime.InteropServices;
 using TMPro;
 using EnhancedScrollerDemos.SnappingDemo;
+using Cysharp.Threading.Tasks; // UniTaskの名前空間を追加
+using System.Threading; // CancellationTokenを使用するために追加
 
 public class UIController : MonoBehaviour
 {
+    [SerializeField] private Button adsCredit, add5Credit, add25Credit, add55Credit, add120Credit, add250Credit;
+    [SerializeField] private Image addCreditCompletePanel;
+    [SerializeField] private Image shoppingPanel;
+    [SerializeField] private TMP_Text remainPullText;
     SnappingDemo snappingDemo;
+
+    private CancellationTokenSource _cts = new CancellationTokenSource();
 
     void Start()
     {
         snappingDemo = GetComponent<SnappingDemo>();
-        if (snappingDemo != null)
+        remainPullText.text = "残り: " + snappingDemo.remainPullNumber + "回";
+        adsCredit.onClick.AddListener(() =>
         {
-            if (snappingDemo.isAutomaticMode == true)
-            {
-                Debug.Log("Automatic Mode is enabled");
-            }
-            else
-            {
-                Debug.Log("Automatic Mode is disabled");
-            }
-        }
+            Interstitial.instance.showInterstitialAd();
+            AddPullCredit(1).Forget();
+        });
+        add5Credit.onClick.AddListener(() =>
+        {
+            AddPullCredit(5).Forget();
+        });
+        add25Credit.onClick.AddListener(() =>
+        {
+            AddPullCredit(25).Forget();
+        });
+        add55Credit.onClick.AddListener(() =>
+        {
+            AddPullCredit(55).Forget();
+        });
+        add120Credit.onClick.AddListener(() =>
+        {
+            AddPullCredit(120).Forget();
+        });
+        add250Credit.onClick.AddListener(() =>
+        {
+            AddPullCredit(250).Forget();
+        });
+    }
+
+    void OnDestroy()
+    {
+        _cts.Cancel();
+        _cts.Dispose();
+    }
+
+    public async UniTaskVoid AddPullCredit(int creditCount)
+    {
+        snappingDemo.remainPullNumber += creditCount;
+        remainPullText.text = "残り: " + snappingDemo.remainPullNumber + "回";
+        PlayerPrefs.SetInt("remainPullNumber", snappingDemo.remainPullNumber);
+        shoppingPanel.gameObject.SetActive(false);
+        await UniTask.Delay(1000, cancellationToken: _cts.Token);
+        addCreditCompletePanel.gameObject.SetActive(true);
+    }
+
+    public void RemainCreditTextUpdate()
+    {
+        remainPullText.text = "残り: " + snappingDemo.remainPullNumber + "回";
     }
 }

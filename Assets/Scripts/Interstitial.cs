@@ -7,7 +7,20 @@ using TMPro;
 
 public class Interstitial : MonoBehaviour
 {
+    public static Interstitial instance;
     private InterstitialAd interstitial;
+
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+    }
 
     void Start()
     {

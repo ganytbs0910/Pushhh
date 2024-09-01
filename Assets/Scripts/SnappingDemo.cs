@@ -10,32 +10,33 @@ namespace EnhancedScrollerDemos.SnappingDemo
 {
     public class SnappingDemo : MonoBehaviour
     {
-        private SlotController[] _slotControllers;
-        private int[] _snappedDataIndices;
-        private int _snapCount;
-        public float minVelocity;
-        public float maxVelocity;
-        public Sprite[] slotSprites;
-        public Button spinButton;
-        public Button[] stopButtons;
-        public float spinInterval = 0.4f;
-        public float spinDuration = 3f;
-        public float winProbability = 0.1f;
-        public TMP_Text resultText;
-        public bool isAutomaticMode = false;
-
-        private int[] _predeterminedResult;
-        private bool[] _isSlotStopped;
-        private Coroutine[] _spinCoroutines;
+        [SerializeField] private SlotController[] _slotControllers;
+        [SerializeField] private Coroutine[] _spinCoroutines;
+        [SerializeField] private int[] _predeterminedResult;
+        [SerializeField] private int[] _snappedDataIndices;
+        [SerializeField] private int _snapCount;
+        public int remainPullNumber;
+        [SerializeField] private Sprite[] slotSprites;
+        [SerializeField] private Button[] stopButtons;
+        [SerializeField] private Button spinButton;
+        [SerializeField] private float minVelocity;
+        [SerializeField] private float maxVelocity;
+        [SerializeField] private float spinInterval = 0.4f;
+        [SerializeField] private float spinDuration = 3f;
+        [SerializeField] private float winProbability = 0.1f;
+        [SerializeField] private TMP_Text resultText;
+        [SerializeField] private bool[] _isSlotStopped;
+        UIController uiController;
 
         void Awake()
         {
+            uiController = GetComponent<UIController>();
+            remainPullNumber = PlayerPrefs.GetInt("remainPullNumber");
             Application.targetFrameRate = 60;
             _slotControllers = gameObject.GetComponentsInChildren<SlotController>();
             _snappedDataIndices = new int[_slotControllers.Length];
             _isSlotStopped = new bool[_slotControllers.Length];
             _spinCoroutines = new Coroutine[_slotControllers.Length];
-
             for (int i = 0; i < _slotControllers.Length; i++)
             {
                 _slotControllers[i].scroller.scrollerSnapped = ScrollerSnapped;
@@ -43,8 +44,12 @@ namespace EnhancedScrollerDemos.SnappingDemo
                 int index = i; // キャプチャする変数
                 stopButtons[i].onClick.AddListener(() => StopButton_OnClick(index));
             }
-
             spinButton.onClick.AddListener(SpinButton_OnClick);
+        }
+
+        private static bool CanAutoSpin()
+        {
+            return Settings.instance != null && Settings.instance.IsAutoSpinOn;
         }
 
         void Start()
@@ -57,6 +62,18 @@ namespace EnhancedScrollerDemos.SnappingDemo
 
         public void SpinButton_OnClick()
         {
+            VibrationController.VibrateSelectionChanged();
+            if (remainPullNumber <= 0)
+            {
+                Debug.Log("残りプル数がありません");
+                return;
+            }
+            else
+            {
+                remainPullNumber--;
+                PlayerPrefs.SetInt("remainPullNumber", remainPullNumber);
+                uiController.RemainCreditTextUpdate();
+            }
             ResetSlots();
             DetermineResult();
             StartCoroutine(SpinAll());
@@ -78,7 +95,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
 
         private void StopButton_OnClick(int slotIndex)
         {
-            if (!isAutomaticMode && !_isSlotStopped[slotIndex])
+            if (!CanAutoSpin() && !_isSlotStopped[slotIndex])
             {
                 StopSlot(slotIndex);
             }
@@ -109,7 +126,6 @@ namespace EnhancedScrollerDemos.SnappingDemo
         {
             bool isWin = Random.value < winProbability;
             _predeterminedResult = new int[_slotControllers.Length];
-
             if (isWin)
             {
                 int winningNumber = Random.Range(0, slotSprites.Length);
@@ -117,6 +133,23 @@ namespace EnhancedScrollerDemos.SnappingDemo
                 {
                     _predeterminedResult[i] = winningNumber;
                 }
+                int specialEffectIndex = Random.Range(0, 7);
+                switch (specialEffectIndex)
+                {
+                    case 1:
+                        //振動させる
+                        VibrationController.VibrateHeavy();
+                        break;
+                    case 2:
+                        //フラッシュさせる
+                        break;
+                    case 3:
+                        //スロットを逆に回す
+                        break;
+                    default:
+                        break;
+                }
+
             }
             else
             {
@@ -124,7 +157,6 @@ namespace EnhancedScrollerDemos.SnappingDemo
                 {
                     _predeterminedResult[i] = Random.Range(0, slotSprites.Length);
                 }
-                // 確実に揃わないようにする
                 if (_predeterminedResult.All(x => x == _predeterminedResult[0]))
                 {
                     _predeterminedResult[_predeterminedResult.Length - 1] = (_predeterminedResult[0] + 1) % slotSprites.Length;
@@ -143,13 +175,13 @@ namespace EnhancedScrollerDemos.SnappingDemo
             {
                 stopButtons[i].interactable = true;
                 _spinCoroutines[i] = StartCoroutine(SpinSlot(_slotControllers[i], _predeterminedResult[i], i));
-                if (isAutomaticMode)
+                if (CanAutoSpin())
                 {
                     yield return new WaitForSeconds(spinInterval);
                 }
             }
 
-            if (isAutomaticMode)
+            if (CanAutoSpin())
             {
                 yield return new WaitForSeconds(spinDuration);
                 for (int i = 0; i < _slotControllers.Length; i++)
@@ -174,7 +206,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
         private void ScrollerSnapped(EnhancedScroller scroller, int cellIndex, int dataIndex, EnhancedScrollerCellView cellView)
         {
             _snapCount++;
-            if (_snapCount == _slotControllers.Length && !isAutomaticMode)
+            if (_snapCount == _slotControllers.Length && !CanAutoSpin())
             {
                 EnableSpinButton();
             }

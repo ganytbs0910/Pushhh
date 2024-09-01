@@ -57,8 +57,23 @@ namespace EnhancedScrollerDemos.SnappingDemo
 
         public void SpinButton_OnClick()
         {
+            ResetSlots();
             DetermineResult();
             StartCoroutine(SpinAll());
+        }
+
+        private void ResetSlots()
+        {
+            _snapCount = 0;
+            for (int i = 0; i < _slotControllers.Length; i++)
+            {
+                _isSlotStopped[i] = false;
+                if (_spinCoroutines[i] != null)
+                {
+                    StopCoroutine(_spinCoroutines[i]);
+                    _spinCoroutines[i] = null;
+                }
+            }
         }
 
         private void StopButton_OnClick(int slotIndex)
@@ -74,6 +89,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
             if (_spinCoroutines[slotIndex] != null)
             {
                 StopCoroutine(_spinCoroutines[slotIndex]);
+                _spinCoroutines[slotIndex] = null;
             }
             _slotControllers[slotIndex].scroller.JumpToDataIndex(_predeterminedResult[slotIndex]);
             _isSlotStopped[slotIndex] = true;
@@ -85,6 +101,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
             if (_isSlotStopped.All(stopped => stopped))
             {
                 CheckResult();
+                EnableSpinButton();
             }
         }
 
@@ -119,13 +136,11 @@ namespace EnhancedScrollerDemos.SnappingDemo
 
         private IEnumerator SpinAll()
         {
-            _snapCount = 0;
             spinButton.interactable = false;
             resultText.text = "スピン中...";
 
             for (int i = 0; i < _slotControllers.Length; i++)
             {
-                _isSlotStopped[i] = false;
                 stopButtons[i].interactable = true;
                 _spinCoroutines[i] = StartCoroutine(SpinSlot(_slotControllers[i], _predeterminedResult[i], i));
                 if (isAutomaticMode)
@@ -159,19 +174,22 @@ namespace EnhancedScrollerDemos.SnappingDemo
         private void ScrollerSnapped(EnhancedScroller scroller, int cellIndex, int dataIndex, EnhancedScrollerCellView cellView)
         {
             _snapCount++;
-            _snappedDataIndices[_snapCount - 1] = dataIndex;
-            if (_snapCount == _slotControllers.Length)
+            if (_snapCount == _slotControllers.Length && !isAutomaticMode)
             {
-                CheckResult();
-                spinButton.interactable = true;
-                resultText.text = "スピン終了";
+                EnableSpinButton();
             }
+        }
+
+        private void EnableSpinButton()
+        {
+            spinButton.interactable = true;
+            resultText.text = "スピン終了";
         }
 
         private void CheckResult()
         {
-            int[] displayNumbers = _snappedDataIndices.Select(i => i + 1).ToArray();
-            Debug.Log($"Slot Results: {string.Join(", ", displayNumbers)}");
+            int[] displayNumbers = _predeterminedResult.Select(i => i + 1).ToArray();
+            Debug.Log($"Final Slot Results: {string.Join(", ", displayNumbers)}");
 
             var s1 = displayNumbers[0];
             var s2 = displayNumbers[1];

@@ -17,7 +17,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
         public float maxVelocity;
         public Sprite[] slotSprites;
         public Button spinButton;
-        public Button[] stopButton;
+        public Button[] stopButtons;
         public float spinInterval = 0.4f;
         public float spinDuration = 3f;
         public float winProbability = 0.1f;
@@ -25,17 +25,25 @@ namespace EnhancedScrollerDemos.SnappingDemo
         public bool isAutomaticMode = false;
 
         private int[] _predeterminedResult;
+        private bool[] _isSlotStopped;
+        private Coroutine[] _spinCoroutines;
 
         void Awake()
         {
             Application.targetFrameRate = 60;
             _slotControllers = gameObject.GetComponentsInChildren<SlotController>();
             _snappedDataIndices = new int[_slotControllers.Length];
-            foreach (var slotController in _slotControllers)
+            _isSlotStopped = new bool[_slotControllers.Length];
+            _spinCoroutines = new Coroutine[_slotControllers.Length];
+
+            for (int i = 0; i < _slotControllers.Length; i++)
             {
-                slotController.scroller.scrollerSnapped = ScrollerSnapped;
-                slotController.scroller.snapping = true;
+                _slotControllers[i].scroller.scrollerSnapped = ScrollerSnapped;
+                _slotControllers[i].scroller.snapping = true;
+                int index = i; // キャプチャする変数
+                stopButtons[i].onClick.AddListener(() => StopButton_OnClick(index));
             }
+
             spinButton.onClick.AddListener(SpinButton_OnClick);
         }
 
@@ -51,6 +59,33 @@ namespace EnhancedScrollerDemos.SnappingDemo
         {
             DetermineResult();
             StartCoroutine(SpinAll());
+        }
+
+        private void StopButton_OnClick(int slotIndex)
+        {
+            if (!isAutomaticMode && !_isSlotStopped[slotIndex])
+            {
+                StopSlot(slotIndex);
+            }
+        }
+
+        private void StopSlot(int slotIndex)
+        {
+            if (_spinCoroutines[slotIndex] != null)
+            {
+                StopCoroutine(_spinCoroutines[slotIndex]);
+            }
+            _slotControllers[slotIndex].scroller.JumpToDataIndex(_predeterminedResult[slotIndex]);
+            _isSlotStopped[slotIndex] = true;
+            stopButtons[slotIndex].interactable = false;
+
+            int displayNumber = _predeterminedResult[slotIndex] + 1;
+            Debug.Log($"スロット {slotIndex + 1} の結果: {displayNumber}");
+
+            if (_isSlotStopped.All(stopped => stopped))
+            {
+                CheckResult();
+            }
         }
 
         private void DetermineResult()
@@ -90,25 +125,35 @@ namespace EnhancedScrollerDemos.SnappingDemo
 
             for (int i = 0; i < _slotControllers.Length; i++)
             {
-                StartCoroutine(SpinSlot(_slotControllers[i], _predeterminedResult[i], i + 1));
-                yield return new WaitForSeconds(spinInterval);
+                _isSlotStopped[i] = false;
+                stopButtons[i].interactable = true;
+                _spinCoroutines[i] = StartCoroutine(SpinSlot(_slotControllers[i], _predeterminedResult[i], i));
+                if (isAutomaticMode)
+                {
+                    yield return new WaitForSeconds(spinInterval);
+                }
+            }
+
+            if (isAutomaticMode)
+            {
+                yield return new WaitForSeconds(spinDuration);
+                for (int i = 0; i < _slotControllers.Length; i++)
+                {
+                    if (!_isSlotStopped[i])
+                    {
+                        StopSlot(i);
+                    }
+                }
             }
         }
 
         private IEnumerator SpinSlot(SlotController slotController, int finalIndex, int slotNumber)
         {
-            float elapsedTime = 0f;
-            while (elapsedTime < spinDuration)
+            while (!_isSlotStopped[slotNumber])
             {
                 slotController.scroller.JumpToDataIndex(Random.Range(0, slotSprites.Length));
-                elapsedTime += Time.deltaTime;
                 yield return null;
             }
-
-            slotController.scroller.JumpToDataIndex(finalIndex);
-
-            int displayNumber = finalIndex + 1;
-            Debug.Log($"スロット {slotNumber} の結果: {displayNumber}");
         }
 
         private void ScrollerSnapped(EnhancedScroller scroller, int cellIndex, int dataIndex, EnhancedScrollerCellView cellView)

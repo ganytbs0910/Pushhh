@@ -23,10 +23,14 @@ namespace EnhancedScrollerDemos.SnappingDemo
         [SerializeField] private float maxVelocity;
         [SerializeField] private float spinInterval = 0.4f;
         [SerializeField] private float spinDuration = 3f;
-        [SerializeField] private float winProbability = 0.1f;
+        [SerializeField] private float baseWinProbability = 0.1f;
         [SerializeField] private TMP_Text resultText;
         [SerializeField] private bool[] _isSlotStopped;
-        UIController uiController;
+        [SerializeField] private TMP_Text levelText;
+        [SerializeField] private TMP_Text expText;
+
+        private UIController uiController;
+        private LevelSystem levelSystem;
 
         void Awake()
         {
@@ -41,10 +45,14 @@ namespace EnhancedScrollerDemos.SnappingDemo
             {
                 _slotControllers[i].scroller.scrollerSnapped = ScrollerSnapped;
                 _slotControllers[i].scroller.snapping = true;
-                int index = i; // キャプチャする変数
+                int index = i;
                 stopButtons[i].onClick.AddListener(() => StopButton_OnClick(index));
             }
             spinButton.onClick.AddListener(SpinButton_OnClick);
+
+            levelSystem = new LevelSystem();
+            LoadLevelData();
+            UpdateLevelUI();
         }
 
         private static bool CanAutoSpin()
@@ -77,6 +85,10 @@ namespace EnhancedScrollerDemos.SnappingDemo
             ResetSlots();
             DetermineResult();
             StartCoroutine(SpinAll());
+
+            levelSystem.AddExp(10); // スピンごとに10EXP獲得
+            UpdateLevelUI();
+            SaveLevelData();
         }
 
         private void ResetSlots()
@@ -85,6 +97,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
             for (int i = 0; i < _slotControllers.Length; i++)
             {
                 _isSlotStopped[i] = false;
+                stopButtons[i].interactable = false;
                 if (_spinCoroutines[i] != null)
                 {
                     StopCoroutine(_spinCoroutines[i]);
@@ -124,7 +137,8 @@ namespace EnhancedScrollerDemos.SnappingDemo
 
         private void DetermineResult()
         {
-            bool isWin = Random.value < winProbability;
+            float levelBonus = levelSystem.GetWinProbabilityBonus();
+            bool isWin = Random.value < (baseWinProbability + levelBonus);
             _predeterminedResult = new int[_slotControllers.Length];
             if (isWin)
             {
@@ -137,7 +151,6 @@ namespace EnhancedScrollerDemos.SnappingDemo
                 switch (specialEffectIndex)
                 {
                     case 1:
-                        //振動させる
                         VibrationController.VibrateHeavy();
                         break;
                     case 2:
@@ -149,7 +162,6 @@ namespace EnhancedScrollerDemos.SnappingDemo
                     default:
                         break;
                 }
-
             }
             else
             {
@@ -216,6 +228,10 @@ namespace EnhancedScrollerDemos.SnappingDemo
         {
             spinButton.interactable = true;
             resultText.text = "スピン終了";
+            foreach (var button in stopButtons)
+            {
+                button.interactable = false;
+            }
         }
 
         private void CheckResult()
@@ -247,6 +263,65 @@ namespace EnhancedScrollerDemos.SnappingDemo
 
             Debug.Log(result);
             resultText.text = result;
+        }
+
+        private void LoadLevelData()
+        {
+            levelSystem.CurrentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
+            levelSystem.CurrentExp = PlayerPrefs.GetInt("CurrentExp", 0);
+            levelSystem.ExpToNextLevel = PlayerPrefs.GetInt("ExpToNextLevel", 100);
+        }
+
+        private void SaveLevelData()
+        {
+            PlayerPrefs.SetInt("CurrentLevel", levelSystem.CurrentLevel);
+            PlayerPrefs.SetInt("CurrentExp", levelSystem.CurrentExp);
+            PlayerPrefs.SetInt("ExpToNextLevel", levelSystem.ExpToNextLevel);
+            PlayerPrefs.Save();
+        }
+
+        private void UpdateLevelUI()
+        {
+            levelText.text = $"Level: {levelSystem.CurrentLevel}";
+            expText.text = $"EXP: {levelSystem.CurrentExp} / {levelSystem.ExpToNextLevel}";
+        }
+    }
+
+    public class LevelSystem
+    {
+        public int CurrentLevel { get; set; }
+        public int CurrentExp { get; set; }
+        public int ExpToNextLevel { get; set; }
+
+        private const int BaseExpToNextLevel = 100;
+        private const float ExpGrowthRate = 1.5f;
+
+        public LevelSystem()
+        {
+            CurrentLevel = 1;
+            CurrentExp = 0;
+            ExpToNextLevel = BaseExpToNextLevel;
+        }
+
+        public void AddExp(int exp)
+        {
+            CurrentExp += exp;
+            while (CurrentExp >= ExpToNextLevel)
+            {
+                LevelUp();
+            }
+        }
+
+        private void LevelUp()
+        {
+            CurrentLevel++;
+            CurrentExp -= ExpToNextLevel;
+            ExpToNextLevel = (int)(ExpToNextLevel * ExpGrowthRate);
+        }
+
+        public float GetWinProbabilityBonus()
+        {
+            return (CurrentLevel - 1) * 0.01f; // 1レベルごとに1%ずつ当選確率上昇
         }
     }
 }

@@ -56,7 +56,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
             UpdateLevelUI();
         }
 
-        private static bool CanAutoSpin()
+        private static bool AutoSpin()
         {
             return Settings.instance != null && Settings.instance.IsAutoSpinOn;
         }
@@ -85,10 +85,10 @@ namespace EnhancedScrollerDemos.SnappingDemo
                 uiController.RemainCreditTextUpdate();
             }
             ResetSlots();
+            //レバーによるスロットの運命を決定
             DetermineResult();
             StartCoroutine(SpinAll());
-
-            levelSystem.AddExp(10); // スピンごとに10EXP獲得
+            levelSystem.AddExp(10);
             UpdateLevelUI();
             SaveLevelData();
         }
@@ -110,7 +110,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
 
         private void StopButton_OnClick(int slotIndex)
         {
-            if (!CanAutoSpin() && !_isSlotStopped[slotIndex])
+            if (!AutoSpin() && !_isSlotStopped[slotIndex])
             {
                 StopSlot(slotIndex);
             }
@@ -146,21 +146,8 @@ namespace EnhancedScrollerDemos.SnappingDemo
                 {
                     _predeterminedResult[i] = winningNumber;
                 }
-                int specialEffectIndex = Random.Range(0, 7);
-                switch (specialEffectIndex)
-                {
-                    case 1:
-                        VibrationController.VibrateHeavy();
-                        break;
-                    case 2:
-                        //フラッシュさせる
-                        break;
-                    case 3:
-                        //スロットを逆に回す
-                        break;
-                    default:
-                        break;
-                }
+                //40%の確率で特殊効果を発動
+                if (Random.value < 0.4f) SpecialGachaEffect();
             }
             else
             {
@@ -172,35 +159,63 @@ namespace EnhancedScrollerDemos.SnappingDemo
                 {
                     _predeterminedResult[_predeterminedResult.Length - 1] = (_predeterminedResult[0] + 1) % slotSprites.Length;
                 }
+                //0.1%の確率で特殊効果を発動
+                if (Random.value < 0.001f) SpecialGachaEffect();
             }
+            Debug.Log($"決定された数字: {string.Join(", ", _predeterminedResult.Select(x => x + 1))}");
+        }
 
-            Debug.Log($"Predetermined Result: {string.Join(", ", _predeterminedResult.Select(x => x + 1))}");
+        private void SpecialGachaEffect()
+        {
+            Debug.Log("特殊効果発動！");
+            int specialEffectIndex = Random.Range(0, 8);
+            switch (specialEffectIndex)
+            {
+                case 1:
+                    //振動させる
+                    VibrationController.VibrateHeavy();
+                    break;
+                case 2:
+                    //フラッシュさせる
+                    break;
+                case 3:
+                    //スロットを逆に回す
+                    break;
+                case 4:
+                    //スロットを遅く回す
+                    break;
+                case 5:
+                    //スロットを速く回す
+                    break;
+                case 6:
+                    //ボタンを赤にする
+                    for (int i = 0; i < stopButtons.Length; i++)
+                    {
+                        stopButtons[i].GetComponent<Image>().color = Color.red;
+                    }
+                    break;
+                case 7:
+
+                default:
+                    break;
+            }
         }
 
         private IEnumerator SpinAll()
         {
             spinButton.interactable = false;
             resultText.text = "スピン中...";
-
             for (int i = 0; i < _slotControllers.Length; i++)
             {
-                stopButtons[i].interactable = true;
                 _spinCoroutines[i] = StartCoroutine(SpinSlot(_slotControllers[i], _predeterminedResult[i], i));
-                if (CanAutoSpin())
-                {
-                    yield return new WaitForSeconds(spinInterval);
-                }
+                if (!AutoSpin()) stopButtons[i].interactable = true;
             }
-
-            if (CanAutoSpin())
+            if (AutoSpin())
             {
                 yield return new WaitForSeconds(spinDuration);
                 for (int i = 0; i < _slotControllers.Length; i++)
                 {
-                    if (!_isSlotStopped[i])
-                    {
-                        StopSlot(i);
-                    }
+                    if (!_isSlotStopped[i]) StopSlot(i);
                 }
             }
         }
@@ -217,7 +232,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
         private void ScrollerSnapped(EnhancedScroller scroller, int cellIndex, int dataIndex, EnhancedScrollerCellView cellView)
         {
             _snapCount++;
-            if (_snapCount == _slotControllers.Length && !CanAutoSpin())
+            if (_snapCount == _slotControllers.Length && !AutoSpin())
             {
                 EnableSpinButton();
             }

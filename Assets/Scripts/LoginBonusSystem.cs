@@ -4,6 +4,7 @@ using System.Collections;
 
 public class LoginBonusSystem : MonoBehaviour
 {
+    [SerializeField] private UIController uiController;
     private const string LastLoginKey = "LastLoginDate";
     private const string LoginStreakKey = "LoginStreak";
 
@@ -45,8 +46,7 @@ public class LoginBonusSystem : MonoBehaviour
         int loginStreak = PlayerPrefs.GetInt(LoginStreakKey, 0);
         // ログインボーナスを付与するロジックをここに実装
         Debug.Log($"ログインボーナスを付与しました！ ログイン{loginStreak + 1}日目");
-        // 例: プレイヤーにコインを与える
-        // PlayerData.AddCoins(100);
+        uiController.AddPullCredit(1).Forget();
     }
 
     private void SaveLoginDate(DateTime date)

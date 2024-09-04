@@ -75,6 +75,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
             if (remainPullNumber <= 0)
             {
                 Debug.Log("残りプル数がありません");
+                uiController.LackCreditPanelOpen();
                 return;
             }
             else
@@ -125,10 +126,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
             _slotControllers[slotIndex].scroller.JumpToDataIndex(_predeterminedResult[slotIndex]);
             _isSlotStopped[slotIndex] = true;
             stopButtons[slotIndex].interactable = false;
-
             int displayNumber = _predeterminedResult[slotIndex] + 1;
-            Debug.Log($"スロット {slotIndex + 1} の結果: {displayNumber}");
-
             if (_isSlotStopped.All(stopped => stopped))
             {
                 CheckResult();
@@ -248,21 +246,34 @@ namespace EnhancedScrollerDemos.SnappingDemo
 
             if (s1 == s2 && s2 == s3)
             {
-                if (s1 == 7)
+                switch (s1)
                 {
-                    result = "777が揃いました！大当たり！";
-                }
-                else
-                {
-                    result = $"{s1}が3つ揃いました！当たり！";
+                    case 1:
+                        // 経験値を獲得する
+                        result = "1が3つ揃いました！小当たり！";
+                        break;
+                    case 3:
+                        // 課金クーポンを獲得
+                        result = "3が3つ揃いました！中当たり！";
+                        break;
+                    case 5:
+                        //　次回の当選確率を上昇
+                        result = "5が3つ揃いました！大当たり！";
+                        break;
+                    case 7:
+                        result = "777が揃いました！超大当たり！";
+                        break;
+                    default:
+                        //クレジットを3追加する
+                        uiController.AddPullCredit(3).Forget();
+                        result = $"{s1}が3つ揃いました！当たり！";
+                        break;
                 }
             }
             else
             {
                 result = $"結果: {s1}, {s2}, {s3}。はずれ！";
             }
-
-            Debug.Log(result);
             resultText.text = result;
         }
 

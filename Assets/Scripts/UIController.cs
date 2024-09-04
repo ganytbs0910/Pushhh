@@ -11,6 +11,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private Button adsCredit, add5Credit, add25Credit, add55Credit, add120Credit, add250Credit;
     [SerializeField] private Image addCreditCompletePanel;
     [SerializeField] private Image shoppingPanel;
+    [SerializeField] private Image lackCreditPanel;
     [SerializeField] private TMP_Text remainPullText;
     SnappingDemo snappingDemo;
 
@@ -53,18 +54,24 @@ public class UIController : MonoBehaviour
         _cts.Dispose();
     }
 
+    ///クレジットを追加する
     public async UniTaskVoid AddPullCredit(int creditCount)
     {
         snappingDemo.remainPullNumber += creditCount;
         remainPullText.text = "残り: " + snappingDemo.remainPullNumber + "回";
         PlayerPrefs.SetInt("remainPullNumber", snappingDemo.remainPullNumber);
         shoppingPanel.gameObject.SetActive(false);
-        await UniTask.Delay(1000, cancellationToken: _cts.Token);
+        await UniTask.Delay(500, cancellationToken: _cts.Token);
         addCreditCompletePanel.gameObject.SetActive(true);
     }
 
     public void RemainCreditTextUpdate()
     {
         remainPullText.text = "残り: " + snappingDemo.remainPullNumber + "回";
+    }
+
+    public void LackCreditPanelOpen()
+    {
+        lackCreditPanel.gameObject.SetActive(true);
     }
 }

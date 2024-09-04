@@ -9,7 +9,7 @@ public class ButtonCustom : MonoBehaviour
     public bool isVibrationWeak = false;
     public bool isVibrationMedium = false;
     public bool isVibrationStrong = false;
-    Button button
+    Button button;
 
     void Start()
     {
@@ -18,7 +18,7 @@ public class ButtonCustom : MonoBehaviour
         {
             if (isButtonClickSoundOn)
             {
-                AudioManager.Instance.PlaySE(SESoundData.SE.button);
+                //AudioManager.Instance.PlaySE(SESoundData.SE.button);
             }
             if (isVibrationWeak)
             {

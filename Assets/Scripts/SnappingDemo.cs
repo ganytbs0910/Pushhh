@@ -47,6 +47,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
                 _slotControllers[i].scroller.snapping = true;
                 int index = i;
                 stopButtons[i].onClick.AddListener(() => StopButton_OnClick(index));
+                stopButtons[i].interactable = false;
             }
             spinButton.onClick.AddListener(SpinButton_OnClick);
 

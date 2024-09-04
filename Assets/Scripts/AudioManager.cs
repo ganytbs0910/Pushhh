@@ -7,13 +7,8 @@ public class AudioManager : MonoBehaviour
 {
     [SerializeField] AudioSource bgmAudioSource;
     [SerializeField] AudioSource seAudioSource;
-
-    [SerializeField] Slider bgmSilder;
-    [SerializeField] Slider seSilder;
-
     [SerializeField] List<BGMSoundData> bgmSoundDatas;
     [SerializeField] List<SESoundData> seSoundDatas;
-
     private float masterVolume = 1;
     public float bgmMasterVolume = 1;
     public float seMasterVolume = 1;
@@ -49,8 +44,7 @@ public class AudioManager : MonoBehaviour
         seMasterVolume = PlayerPrefs.GetFloat("SEVolume");
 
         // スライダーの値を設定する
-        bgmSilder.value = bgmMasterVolume;
-        seSilder.value = seMasterVolume;
+
         PlayBGM(BGMSoundData.BGM.normal);
     }
 
@@ -73,9 +67,6 @@ public class AudioManager : MonoBehaviour
 
     public void OnSliderValueChange()
     {
-        bgmMasterVolume = bgmSilder.value;
-        seMasterVolume = seSilder.value;
-
         PlayerPrefs.SetFloat("BGMVolume", bgmMasterVolume);
         PlayerPrefs.SetFloat("SEVolume", seMasterVolume);
     }

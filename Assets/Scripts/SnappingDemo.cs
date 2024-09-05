@@ -294,16 +294,16 @@ namespace EnhancedScrollerDemos.SnappingDemo
 
         private void LoadLevelData()
         {
+            levelSystem = new LevelSystem();
             levelSystem.CurrentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
             levelSystem.CurrentExp = PlayerPrefs.GetInt("CurrentExp", 0);
-            levelSystem.ExpToNextLevel = PlayerPrefs.GetInt("ExpToNextLevel", 100);
+            levelSystem.AddExp(0);
         }
 
         private void SaveLevelData()
         {
             PlayerPrefs.SetInt("CurrentLevel", levelSystem.CurrentLevel);
             PlayerPrefs.SetInt("CurrentExp", levelSystem.CurrentExp);
-            PlayerPrefs.SetInt("ExpToNextLevel", levelSystem.ExpToNextLevel);
             PlayerPrefs.Save();
         }
 
@@ -314,20 +314,24 @@ namespace EnhancedScrollerDemos.SnappingDemo
         }
     }
 
+    /// <summary>
+    /// レベルシステム
+    /// </summary>
     public class LevelSystem
     {
         public int CurrentLevel { get; set; }
         public int CurrentExp { get; set; }
-        public int ExpToNextLevel { get; set; }
+        public int ExpToNextLevel { get; private set; }
 
-        private const int BaseExpToNextLevel = 100;
-        private const float ExpGrowthRate = 1.5f;
+        private const int BaseExpToNextLevel = 200; // 基本経験値要求量を増加
+        private const float ExpGrowthRate = 1.8f; // 経験値の増加率を上げる
+        private const float ExpCurveStrength = 1.2f; // 経験値曲線の強さ（高いほど高レベルでの要求量が急増）
 
         public LevelSystem()
         {
             CurrentLevel = 1;
             CurrentExp = 0;
-            ExpToNextLevel = BaseExpToNextLevel;
+            CalculateExpToNextLevel();
         }
 
         public void AddExp(int exp)
@@ -343,12 +347,19 @@ namespace EnhancedScrollerDemos.SnappingDemo
         {
             CurrentLevel++;
             CurrentExp -= ExpToNextLevel;
-            ExpToNextLevel = (int)(ExpToNextLevel * ExpGrowthRate);
+            CalculateExpToNextLevel();
+        }
+
+        private void CalculateExpToNextLevel()
+        {
+            // レベルが上がるほど経験値要求量が急増する計算式
+            ExpToNextLevel = (int)(BaseExpToNextLevel * Mathf.Pow(ExpGrowthRate, CurrentLevel - 1) * Mathf.Pow(CurrentLevel, ExpCurveStrength));
         }
 
         public float GetWinProbabilityBonus()
         {
-            return (CurrentLevel - 1) * 0.01f; // 1レベルごとに1%ずつ当選確率上昇
+            // ボーナス確率の上昇を緩やかにする
+            return Mathf.Min((CurrentLevel - 1) * 0.005f, 0.1f); // 最大10%までの上昇に制限
         }
     }
 }

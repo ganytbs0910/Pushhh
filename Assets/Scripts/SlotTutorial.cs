@@ -4,7 +4,7 @@ using UniRx;
 using System;
 using System.Threading;
 
-public class Tutorial : MonoBehaviour
+public class SlotTutorial : MonoBehaviour
 {
     [SerializeField] private UIController uiController;
     private const string FirstLaunchKey = "IsFirstLaunch";

@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections;
+using Cysharp.Threading.Tasks; // UniTaskの名前空間を追加
 
 public class LoginBonusSystem : MonoBehaviour
 {
@@ -8,8 +9,12 @@ public class LoginBonusSystem : MonoBehaviour
     private const string LastLoginKey = "LastLoginDate";
     private const string LoginStreakKey = "LoginStreak";
 
-    private void Start()
+    private async void Start()
     {
+        // UIControllerが初期化されるまで待機
+        await UniTask.WaitUntil(() => uiController != null);
+        await UniTask.DelayFrame(1); // さらに1フレーム待機して確実に初期化を完了させる
+
         CheckLoginBonus();
     }
 
@@ -46,7 +51,14 @@ public class LoginBonusSystem : MonoBehaviour
         int loginStreak = PlayerPrefs.GetInt(LoginStreakKey, 0);
         // ログインボーナスを付与するロジックをここに実装
         Debug.Log($"ログインボーナスを付与しました！ ログイン{loginStreak + 1}日目");
-        uiController.AddPullCredit(1).Forget();
+        if (uiController != null)
+        {
+            uiController.AddPullCredit(1).Forget();
+        }
+        else
+        {
+            Debug.LogError("UIController is not set!");
+        }
     }
 
     private void SaveLoginDate(DateTime date)

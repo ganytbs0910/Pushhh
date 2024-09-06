@@ -48,6 +48,7 @@ public class UIController : MonoBehaviour
         {
             AddPullCredit(250).Forget();
         });
+        PrizeMoneyInHandTextUpdate(PlayerPrefs.GetInt("PrizeMoneyInHandText"));
     }
 
     void OnDestroy()

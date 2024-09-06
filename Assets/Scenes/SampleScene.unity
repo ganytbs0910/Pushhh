@@ -30793,7 +30793,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 1884337628}
   m_OnClick:
     m_PersistentCalls:
@@ -30952,6 +30952,7 @@ MonoBehaviour:
   count: 0
   winningAmount: 0
   databaseUrl: https://mon-c8c38-default-rtdb.firebaseio.com
+  uiController: {fileID: 8415450043199573482}
 --- !u!1001 &1921677275
 PrefabInstance:
   m_ObjectHideFlags: 0

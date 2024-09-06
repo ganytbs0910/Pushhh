@@ -303,6 +303,8 @@ namespace EnhancedScrollerDemos.SnappingDemo
                         break;
                     case 7:
                         result = "777が揃いました！超大当たり！";
+                        firebaseInitializer.winningAmount = (int)(firebaseInitializer.count * 1.5f + 1000);
+                        PlayerPrefs.SetInt("PrizeMoneyInHandText", PlayerPrefs.GetInt("PrizeMoneyInHandText") + firebaseInitializer.winningAmount);
                         firebaseInitializer.ResetCounter();
                         break;
                     default:

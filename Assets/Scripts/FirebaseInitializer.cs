@@ -21,7 +21,7 @@ public class FirebaseInitializer : MonoBehaviour
 
     [SerializeField]
     private string databaseUrl = "https://mon-c8c38-default-rtdb.firebaseio.com/";
-    UIController uiController;
+    [SerializeField] private UIController uiController;
 
     private async void Start()
     {
@@ -38,7 +38,6 @@ public class FirebaseInitializer : MonoBehaviour
             Debug.LogError($"Error in Start: {ex.Message}\nStackTrace: {ex.StackTrace}");
         }
     }
-
     private async UniTask InitializeFirebaseAsync()
     {
         var dependencyStatus = await FirebaseApp.CheckAndFixDependenciesAsync();
@@ -164,11 +163,16 @@ public class FirebaseInitializer : MonoBehaviour
         UpdateCounterDisplay();
         await SaveCounterAsync();
     }
-
     private void UpdateCounterDisplay()
     {
-        allCountText.text = $"{count}回";
-        currentWinningAmount.text = $"現在の当選金額: {(int)(count * 1.5f) + 1000}円";
+        if (allCountText != null)
+        {
+            allCountText.text = $"{count}回";
+        }
+        if (currentWinningAmount != null)
+        {
+            currentWinningAmount.text = $"現在の当選金額: {winningAmount + count + 1000}円";
+        }
     }
 
     private async UniTask SaveCounterAsync()
@@ -189,13 +193,56 @@ public class FirebaseInitializer : MonoBehaviour
         }
     }
 
-    public async void ResetCounter()
+    public async UniTask ResetCounter()
     {
         try
         {
+            Debug.Log("ResetCounter started");
+
+            if (uiController == null)
+            {
+                Debug.LogError("UIController is not set. Please assign it in the Inspector.");
+                return;
+            }
+
+            // 現在の所持金額を取得
+            int currentBalance = PlayerPrefs.GetInt("PrizeMoneyInHand", 0);
+
+            // 当選金額を加算
+            int newBalance = currentBalance + winningAmount;
+
+            // ローカルの所持金額を更新
+            PlayerPrefs.SetInt("PrizeMoneyInHand", newBalance);
+            PlayerPrefs.Save();
+
+            // UIを更新
+            uiController.PrizeMoneyInHandTextUpdate(newBalance);
+            Debug.Log($"1. PrizeMoneyInHandTextUpdate called with new balance: {newBalance}");
+
+            // Firebaseの残高を更新
+            if (dbReference != null)
+            {
+                await dbReference.Child("users").Child(userId).Child("balance").SetValueAsync(newBalance);
+                Debug.Log($"2. Firebase balance updated to: {newBalance}");
+            }
+            else
+            {
+                Debug.LogError("dbReference is null. Firebase might not be initialized properly.");
+            }
+
+            // カウンターと当選金額をリセット
             count = 0;
+            winningAmount = 0;
             UpdateCounterDisplay();
-            await SaveCounterAsync();
+            Debug.Log("3. Counter and winning amount reset, display updated");
+
+            // Firebaseのカウンターをリセット
+            if (dbReference != null)
+            {
+                await SaveCounterAsync();
+                Debug.Log("4. Firebase counter reset");
+            }
+
             Debug.Log("Counter reset successfully");
         }
         catch (Exception ex)
@@ -220,7 +267,6 @@ public class FirebaseInitializer : MonoBehaviour
 
         try
         {
-            winningAmount = (int)(count * 1.5f + 1000);
             int currentBalance = PlayerPrefs.GetInt("PrizeMoneyInHand", 0);
             int newBalance = currentBalance + winningAmount;
             PlayerPrefs.SetInt("PrizeMoneyInHand", newBalance);

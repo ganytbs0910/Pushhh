@@ -29,7 +29,7 @@ public class FirebaseInitializer : MonoBehaviour
         {
             await InitializeFirebaseAsync();
             await InitializeUserAsync();
-            await LoadCounterAsync();
+            LoadCounterFromPlayerPrefs();
             UpdateCounterDisplay();
             incrementButton.onClick.AddListener(IncrementCounter);
         }
@@ -127,41 +127,24 @@ public class FirebaseInitializer : MonoBehaviour
         }
     }
 
-    private async UniTask LoadCounterAsync()
+    private void LoadCounterFromPlayerPrefs()
     {
-        try
-        {
-            var snapshot = await dbReference.Child("counter").GetValueAsync();
-            if (snapshot != null && snapshot.Exists)
-            {
-                count = Convert.ToInt32(snapshot.Value);
-            }
-            else
-            {
-                Debug.Log("Counter does not exist in database");
-                count = 0;
-            }
-        }
-        catch (DatabaseException dbEx)
-        {
-            Debug.LogError($"Database exception: {dbEx.Message}");
-            Debug.LogError($"InnerException: {dbEx.InnerException?.Message}");
-            Debug.LogError($"StackTrace: {dbEx.StackTrace}");
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"Firebase read failed: {ex.GetType().Name} - {ex.Message}");
-            Debug.LogError($"InnerException: {ex.InnerException?.Message}");
-            Debug.LogError($"StackTrace: {ex.StackTrace}");
-        }
+        count = PlayerPrefs.GetInt("LocalCounter", 0);
     }
 
-    private async void IncrementCounter()
+    private void IncrementCounter()
     {
         count++;
+        SaveCounterToPlayerPrefs();
         UpdateCounterDisplay();
-        await SaveCounterAsync();
     }
+
+    private void SaveCounterToPlayerPrefs()
+    {
+        PlayerPrefs.SetInt("LocalCounter", count);
+        PlayerPrefs.Save();
+    }
+
     private void UpdateCounterDisplay()
     {
         if (allCountText != null)
@@ -170,25 +153,8 @@ public class FirebaseInitializer : MonoBehaviour
         }
         if (currentWinningAmount != null)
         {
-            currentWinningAmount.text = $"現在の当選金額: {(int)(count * 0.1f) + 1000}円";
-        }
-    }
-
-    private async UniTask SaveCounterAsync()
-    {
-        try
-        {
-            await dbReference.Child("counter").SetValueAsync(count);
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"Firebase save failed: {ex.GetType().Name} - {ex.Message}");
-            Debug.LogError($"StackTrace: {ex.StackTrace}");
-            if (ex.InnerException != null)
-            {
-                Debug.LogError($"Inner exception: {ex.InnerException.GetType().Name} - {ex.InnerException.Message}");
-                Debug.LogError($"Inner StackTrace: {ex.InnerException.StackTrace}");
-            }
+            winningAmount = (int)(count * 0.1f) + 1000;
+            currentWinningAmount.text = $"現在の当選金額: {winningAmount}円";
         }
     }
 
@@ -231,16 +197,10 @@ public class FirebaseInitializer : MonoBehaviour
 
             // カウンターと当選金額をリセット
             count = 0;
+            SaveCounterToPlayerPrefs();
             winningAmount = 0;
             UpdateCounterDisplay();
             Debug.Log("3. Counter and winning amount reset, display updated");
-
-            // Firebaseのカウンターをリセット
-            if (dbReference != null)
-            {
-                await SaveCounterAsync();
-                Debug.Log("4. Firebase counter reset");
-            }
 
             Debug.Log("Counter reset successfully");
         }
@@ -248,11 +208,6 @@ public class FirebaseInitializer : MonoBehaviour
         {
             Debug.LogError($"Failed to reset counter: {ex.GetType().Name} - {ex.Message}");
             Debug.LogError($"StackTrace: {ex.StackTrace}");
-            if (ex.InnerException != null)
-            {
-                Debug.LogError($"Inner exception: {ex.InnerException.GetType().Name} - {ex.InnerException.Message}");
-                Debug.LogError($"Inner StackTrace: {ex.InnerException.StackTrace}");
-            }
         }
     }
 

@@ -101,6 +101,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
                 remainPullNumber--;
                 PlayerPrefs.SetInt("remainPullNumber", remainPullNumber);
                 uiController.RemainCreditTextUpdate();
+                uiController.YourSpinCountTextUpdate();
             }
             // デバッグ用: キーボードのJキーを押すとジャックポットが強制的に発生
             if (Input.GetKey(KeyCode.J))

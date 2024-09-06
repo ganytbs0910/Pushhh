@@ -15,6 +15,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private Image lackCreditPanel;
     [SerializeField] private TMP_Text remainPullText;
     [SerializeField] private TMP_Text prizeMoneyInHandText;
+    [SerializeField] private TMP_Text yourSpinCountText;
     SnappingDemo snappingDemo;
 
     private CancellationTokenSource _cts = new CancellationTokenSource();
@@ -49,6 +50,7 @@ public class UIController : MonoBehaviour
             AddPullCredit(250).Forget();
         });
         PrizeMoneyInHandTextUpdate(PlayerPrefs.GetInt("PrizeMoneyInHandText"));
+        YourSpinCountTextUpdate();
     }
 
     void OnDestroy()
@@ -82,5 +84,10 @@ public class UIController : MonoBehaviour
     public void PrizeMoneyInHandTextUpdate(int prizeMoney)
     {
         prizeMoneyInHandText.text = "所持金額: " + prizeMoney + "円";
+    }
+
+    public void YourSpinCountTextUpdate()
+    {
+        yourSpinCountText.text = "あなたのスピン回数: " + PlayerPrefs.GetInt("LocalCounter") + "回";
     }
 }

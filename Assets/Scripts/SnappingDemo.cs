@@ -70,6 +70,23 @@ namespace EnhancedScrollerDemos.SnappingDemo
             }
         }
 
+        public void ForceJackpot()
+        {
+            // 7のインデックスを取得 (スプライトの配列で7が6番目と仮定)
+            int jackpotIndex = 6;  // 注意: これはslotSprites配列での7の実際の位置に合わせて調整する必要があります
+
+            // すべてのスロットを7に設定
+            _predeterminedResult = new int[_slotControllers.Length];
+            for (int i = 0; i < _slotControllers.Length; i++)
+            {
+                _predeterminedResult[i] = jackpotIndex;
+            }
+
+            // スピン処理を開始
+            ResetSlots();
+            StartCoroutine(SpinAll());
+        }
+
         public void SpinButton_OnClick()
         {
             VibrationController.VibrateSelectionChanged();
@@ -85,10 +102,18 @@ namespace EnhancedScrollerDemos.SnappingDemo
                 PlayerPrefs.SetInt("remainPullNumber", remainPullNumber);
                 uiController.RemainCreditTextUpdate();
             }
-            ResetSlots();
-            //レバーによるスロットの運命を決定
-            DetermineResult();
-            StartCoroutine(SpinAll());
+            // デバッグ用: キーボードのJキーを押すとジャックポットが強制的に発生
+            if (Input.GetKey(KeyCode.J))
+            {
+                ForceJackpot();
+            }
+            else
+            {
+                ResetSlots();
+                //レバーによるスロットの運命を決定
+                DetermineResult();
+                StartCoroutine(SpinAll());
+            }
             levelSystem.AddExp(10);
             UpdateLevelUI();
             SaveLevelData();

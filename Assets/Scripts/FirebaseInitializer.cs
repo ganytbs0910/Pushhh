@@ -17,7 +17,7 @@ public class FirebaseInitializer : MonoBehaviour
     public int count = 0;
     public int winningAmount = 0;
     private DatabaseReference dbReference;
-    private string userId; // 新しく追加：ユーザーID
+    private string userId;
 
     [SerializeField]
     private string databaseUrl = "https://mon-c8c38-default-rtdb.firebaseio.com/";
@@ -37,32 +37,6 @@ public class FirebaseInitializer : MonoBehaviour
         {
             Debug.LogError($"Error in Start: {ex.Message}\nStackTrace: {ex.StackTrace}");
         }
-    }
-
-    private async UniTask InitializeUserAsync()
-    {
-        userId = PlayerPrefs.GetString("UserId", "");
-        if (string.IsNullOrEmpty(userId))
-        {
-            userId = Guid.NewGuid().ToString();
-            PlayerPrefs.SetString("UserId", userId);
-            PlayerPrefs.Save();
-
-            // Firebaseにユーザー情報を保存
-            await dbReference.Child("users").Child(userId).SetValueAsync(new Dictionary<string, object>
-            {
-                { "createdAt", DateTime.UtcNow.ToString("o") },
-                { "lastLogin", DateTime.UtcNow.ToString("o") }
-            });
-        }
-        else
-        {
-            // 既存ユーザーの場合、最終ログイン時間を更新
-            await dbReference.Child("users").Child(userId).Child("lastLogin").SetValueAsync(DateTime.UtcNow.ToString("o"));
-        }
-
-        userIdText.text = $"User ID: {userId}";
-        Debug.Log($"User initialized with ID: {userId}");
     }
 
     private async UniTask InitializeFirebaseAsync()
@@ -90,6 +64,68 @@ public class FirebaseInitializer : MonoBehaviour
         else
         {
             Debug.LogError($"Could not resolve all Firebase dependencies: {dependencyStatus}");
+        }
+    }
+
+    private async UniTask InitializeUserAsync()
+    {
+        userId = PlayerPrefs.GetString("UserId", "");
+        if (string.IsNullOrEmpty(userId))
+        {
+            userId = Guid.NewGuid().ToString();
+            PlayerPrefs.SetString("UserId", userId);
+            PlayerPrefs.Save();
+
+            // Firebaseにユーザー情報を保存
+            await dbReference.Child("users").Child(userId).SetValueAsync(new Dictionary<string, object>
+            {
+                { "createdAt", DateTime.UtcNow.ToString("o") },
+                { "lastLogin", DateTime.UtcNow.ToString("o") },
+                { "balance", 0 } // 初期残高を0に設定
+            });
+        }
+        else
+        {
+            // 既存ユーザーの場合、最終ログイン時間を更新
+            await dbReference.Child("users").Child(userId).Child("lastLogin").SetValueAsync(DateTime.UtcNow.ToString("o"));
+        }
+
+        // ユーザーの残高を同期
+        await SyncUserBalance();
+
+        userIdText.text = $"User ID: {userId}";
+        Debug.Log($"User initialized with ID: {userId}");
+    }
+
+    private async UniTask SyncUserBalance()
+    {
+        try
+        {
+            var balanceSnapshot = await dbReference.Child("users").Child(userId).Child("balance").GetValueAsync();
+            if (balanceSnapshot.Exists)
+            {
+                int firebaseBalance = Convert.ToInt32(balanceSnapshot.Value);
+                int localBalance = PlayerPrefs.GetInt("PrizeMoneyInHand", 0);
+
+                // ローカルの残高とFirebaseの残高が異なる場合、Firebaseの値を使用
+                if (firebaseBalance != localBalance)
+                {
+                    PlayerPrefs.SetInt("PrizeMoneyInHand", firebaseBalance);
+                    PlayerPrefs.Save();
+                    Debug.Log($"User balance synced from Firebase: {firebaseBalance}");
+                }
+            }
+            else
+            {
+                // Firebaseに残高が存在しない場合、ローカルの値を使用して初期化
+                int localBalance = PlayerPrefs.GetInt("PrizeMoneyInHand", 0);
+                await dbReference.Child("users").Child(userId).Child("balance").SetValueAsync(localBalance);
+                Debug.Log($"Initial user balance set in Firebase: {localBalance}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Failed to sync user balance: {ex.Message}");
         }
     }
 
@@ -133,7 +169,6 @@ public class FirebaseInitializer : MonoBehaviour
     {
         allCountText.text = $"{count}回";
         currentWinningAmount.text = $"現在の当選金額: {(int)(count * 1.5f) + 1000}円";
-
     }
 
     private async UniTask SaveCounterAsync()
@@ -174,7 +209,8 @@ public class FirebaseInitializer : MonoBehaviour
             }
         }
     }
-    public async UniTask SaveWinningRecordAsync(int amount)
+
+    public async void RecordWinning()
     {
         if (string.IsNullOrEmpty(userId))
         {
@@ -184,38 +220,45 @@ public class FirebaseInitializer : MonoBehaviour
 
         try
         {
+            winningAmount = (int)(count * 1.5f + 1000);
+            int currentBalance = PlayerPrefs.GetInt("PrizeMoneyInHand", 0);
+            int newBalance = currentBalance + winningAmount;
+            PlayerPrefs.SetInt("PrizeMoneyInHand", newBalance);
+            PlayerPrefs.Save();
+
+            uiController.PrizeMoneyInHandTextUpdate(newBalance);
+
             // 当選記録を作成
             Dictionary<string, object> winningRecord = new Dictionary<string, object>
             {
-                { "amount", amount },
+                { "userId", userId },
+                { "winningAmount", winningAmount },
+                { "newBalance", newBalance },
                 { "timestamp", DateTime.UtcNow.ToString("o") }
             };
 
             // ユーザーの当選履歴に新しいレコードを追加
             DatabaseReference newWinRef = dbReference.Child("users").Child(userId).Child("winnings").Push();
             await newWinRef.SetValueAsync(winningRecord);
-            string newWinKey = newWinRef.Key;
 
-            // 全体の当選履歴にも追加（ユーザーIDを含める）
-            Dictionary<string, object> globalWinningRecord = new Dictionary<string, object>(winningRecord)
-            {
-                { "userId", userId }
-            };
-            await dbReference.Child("globalWinnings").Push().SetValueAsync(globalWinningRecord);
+            // 全体の当選履歴にも追加
+            await dbReference.Child("globalWinnings").Push().SetValueAsync(winningRecord);
 
-            Debug.Log($"Winning record saved successfully. Amount: {amount}, Record key: {newWinKey}");
+            // ユーザーの現在の残高を更新
+            await dbReference.Child("users").Child(userId).Child("balance").SetValueAsync(newBalance);
 
-            // オプション：ユーザーの累計当選金額を更新
-            await UpdateTotalWinningsAsync(amount);
+            Debug.Log($"Winning record saved successfully. Amount: {winningAmount}, New Balance: {newBalance}, Record key: {newWinRef.Key}");
+
+            // ユーザーの累計当選金額を更新
+            await UpdateTotalWinningsAsync(winningAmount);
         }
         catch (Exception ex)
         {
-            Debug.LogError($"Failed to save winning record: {ex.Message}");
+            Debug.LogError($"Failed to record winning: {ex.Message}");
             Debug.LogError($"StackTrace: {ex.StackTrace}");
         }
     }
 
-    // 累計当選金額を更新する補助関数
     private async UniTask UpdateTotalWinningsAsync(int newWinAmount)
     {
         try
@@ -230,15 +273,4 @@ public class FirebaseInitializer : MonoBehaviour
             Debug.LogError($"Failed to update total winnings: {ex.Message}");
         }
     }
-
-    // この関数を呼び出して当選を記録
-    public async void RecordWinning()
-    {
-        winningAmount = (int)(count * 1.5f + 1000);
-        PlayerPrefs.SetInt("PrizeMoneyInHand", PlayerPrefs.GetInt("PrizeMoneyInHand") + winningAmount);
-        uiController.PrizeMoneyInHandTextUpdate(winningAmount);
-        await SaveWinningRecordAsync(winningAmount);
-        // ここで UI の更新などの追加の処理を行うことができます
-    }
-
 }

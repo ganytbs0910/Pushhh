@@ -92,8 +92,7 @@ public class FirebaseInitializer : MonoBehaviour
         // ユーザーの残高を同期
         await SyncUserBalance();
 
-        userIdText.text = $"User ID: {userId}";
-        Debug.Log($"User initialized with ID: {userId}");
+        userIdText.text = $"ユーザーIDは「{userId}」です。 ";
     }
 
     private async UniTask SyncUserBalance()

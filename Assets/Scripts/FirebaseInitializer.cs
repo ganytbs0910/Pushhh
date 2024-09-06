@@ -171,7 +171,7 @@ public class FirebaseInitializer : MonoBehaviour
         }
         if (currentWinningAmount != null)
         {
-            currentWinningAmount.text = $"現在の当選金額: {winningAmount + count + 1000}円";
+            currentWinningAmount.text = $"現在の当選金額: {(int)(count * 0.1f) + 1000}円";
         }
     }
 

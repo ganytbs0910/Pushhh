@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections;
-using Cysharp.Threading.Tasks; // UniTaskの名前空間を追加
+using Cysharp.Threading.Tasks;
 
 public class LoginBonusSystem : MonoBehaviour
 {
@@ -11,10 +11,8 @@ public class LoginBonusSystem : MonoBehaviour
 
     private async void Start()
     {
-        // UIControllerが初期化されるまで待機
         await UniTask.WaitUntil(() => uiController != null);
-        await UniTask.DelayFrame(1); // さらに1フレーム待機して確実に初期化を完了させる
-
+        await UniTask.DelayFrame(1);
         CheckLoginBonus();
     }
 
@@ -25,9 +23,9 @@ public class LoginBonusSystem : MonoBehaviour
 
         if (IsNewDay(currentDate, lastLoginDate))
         {
-            GiveLoginBonus();
+            int loginStreak = UpdateLoginStreak(currentDate, lastLoginDate);
+            GiveLoginBonus(loginStreak);
             SaveLoginDate(currentDate);
-            UpdateLoginStreak(currentDate, lastLoginDate);
         }
     }
 
@@ -46,18 +44,33 @@ public class LoginBonusSystem : MonoBehaviour
         return currentDate.Date > lastLoginDate.Date;
     }
 
-    private void GiveLoginBonus()
+    private void GiveLoginBonus(int loginStreak)
     {
-        int loginStreak = PlayerPrefs.GetInt(LoginStreakKey, 0);
-        // ログインボーナスを付与するロジックをここに実装
-        Debug.Log($"ログインボーナスを付与しました！ ログイン{loginStreak + 1}日目");
+        int bonusAmount = CalculateBonusAmount(loginStreak);
+        Debug.Log($"ログインボーナスを付与しました！ ログイン{loginStreak}日目: {bonusAmount}クレジット");
         if (uiController != null)
         {
-            uiController.AddPullCredit(1).Forget();
+            uiController.AddPullCredit(bonusAmount).Forget();
         }
         else
         {
             Debug.LogError("UIController is not set!");
+        }
+    }
+
+    private int CalculateBonusAmount(int loginStreak)
+    {
+        // 連続ログイン日数に応じてボーナス額を計算
+        switch (loginStreak)
+        {
+            case 1: return 1;  // 1日目: 1クレジット
+            case 2: return 2;  // 2日目: 2クレジット
+            case 3: return 2;  // 3日目: 3クレジット
+            case 4: return 3;  // 4日目: 4クレジット
+            case 5: return 3;  // 5日目: 5クレジット
+            case 6: return 4;  // 6日目: 6クレジット
+            case 7: return 5; // 7日目: 10クレジット（週間ボーナス）
+            default: return 3; // 8日目以降: 5クレジット
         }
     }
 
@@ -67,7 +80,7 @@ public class LoginBonusSystem : MonoBehaviour
         PlayerPrefs.Save();
     }
 
-    private void UpdateLoginStreak(DateTime currentDate, DateTime lastLoginDate)
+    private int UpdateLoginStreak(DateTime currentDate, DateTime lastLoginDate)
     {
         int currentStreak = PlayerPrefs.GetInt(LoginStreakKey, 0);
 
@@ -84,5 +97,7 @@ public class LoginBonusSystem : MonoBehaviour
 
         PlayerPrefs.SetInt(LoginStreakKey, currentStreak);
         PlayerPrefs.Save();
+
+        return currentStreak;
     }
 }

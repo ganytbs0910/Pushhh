@@ -8,10 +8,12 @@ using DG.Tweening;
 
 public class SlotTutorial : MonoBehaviour
 {
+    [SerializeField] private float moveDuration = 1f;
+    [SerializeField] private float moveDistance = 3f;
     [SerializeField] private GameObject slotTutorialPanel;
     [SerializeField] private Button tutorialPanelCloseButton, closeButton;
     [SerializeField] private Image unmaskedPanel, tutorialPanel;
-    [SerializeField] private Image arrowImage;
+    [SerializeField] private RectTransform arrowImage;
     [SerializeField] private UIController uiController;
     private const string FirstLaunchKey = "IsFirstLaunch";
     private const string VersionKey = "GameVersion";
@@ -29,15 +31,37 @@ public class SlotTutorial : MonoBehaviour
         {
             tutorialPanel.gameObject.SetActive(false);
             unmaskedPanel.gameObject.SetActive(true);
-            //arrowImageを左下に-50移動させるアニメーションを繰り返す
-            arrowImage.rectTransform.DOAnchorPos(new Vector2(-3, -3), 0.5f).SetLoops(-1, LoopType.Yoyo);
+            //arrowImageを左下に-3移動させるアニメーションを繰り返す
+            // 初期位置を保存
+            Vector2 initialPosition = arrowImage.anchoredPosition;
+            // 移動アニメーションを作成
+            Sequence sequence = DOTween.Sequence();
+            // 左下に移動
+            sequence.Append(arrowImage.DOAnchorPos(initialPosition + new Vector2(-moveDistance, -moveDistance), moveDuration)
+                .SetEase(Ease.InOutQuad));
+            // 元の位置に戻る
+            sequence.Append(arrowImage.DOAnchorPos(initialPosition, 1)
+                .SetEase(Ease.InOutQuad));
+            // ループを設定
+            sequence.SetLoops(-1, LoopType.Restart);
         });
         closeButton.onClick.AddListener(() =>
         {
             tutorialPanel.gameObject.SetActive(false);
             unmaskedPanel.gameObject.SetActive(true);
             //arrowImageを左下に-3移動させるアニメーションを繰り返す
-            arrowImage.rectTransform.DOAnchorPos(new Vector2(-3, -3), 0.5f).SetLoops(-1, LoopType.Yoyo);
+            // 初期位置を保存
+            Vector2 initialPosition = arrowImage.anchoredPosition;
+            // 移動アニメーションを作成
+            Sequence sequence = DOTween.Sequence();
+            // 左下に移動
+            sequence.Append(arrowImage.DOAnchorPos(initialPosition + new Vector2(-moveDistance, -moveDistance), moveDuration)
+                .SetEase(Ease.InOutQuad));
+            // 元の位置に戻る
+            sequence.Append(arrowImage.DOAnchorPos(initialPosition, 1)
+                .SetEase(Ease.InOutQuad));
+            // ループを設定
+            sequence.SetLoops(-1, LoopType.Restart);
         });
     }
 

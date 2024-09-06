@@ -31,6 +31,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
 
         private UIController uiController;
         private LevelSystem levelSystem;
+        [SerializeField] private FirebaseInitializer firebaseInitializer;
 
         void Awake()
         {
@@ -277,6 +278,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
                         break;
                     case 7:
                         result = "777が揃いました！超大当たり！";
+                        firebaseInitializer.ResetCounter();
                         break;
                     default:
                         //クレジットを3追加する

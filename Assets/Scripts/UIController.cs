@@ -8,11 +8,13 @@ using System.Threading; // CancellationTokenを使用するために追加
 
 public class UIController : MonoBehaviour
 {
+
     [SerializeField] private Button adsCredit, add5Credit, add25Credit, add55Credit, add120Credit, add250Credit;
     [SerializeField] private Image addCreditCompletePanel;
     [SerializeField] private Image shoppingPanel;
     [SerializeField] private Image lackCreditPanel;
     [SerializeField] private TMP_Text remainPullText;
+    [SerializeField] private TMP_Text prizeMoneyInHandText;
     SnappingDemo snappingDemo;
 
     private CancellationTokenSource _cts = new CancellationTokenSource();
@@ -73,5 +75,11 @@ public class UIController : MonoBehaviour
     public void LackCreditPanelOpen()
     {
         lackCreditPanel.gameObject.SetActive(true);
+    }
+
+    // 当選金額を表示する
+    public void PrizeMoneyInHandTextUpdate(int prizeMoney)
+    {
+        prizeMoneyInHandText.text = "所持金額: " + prizeMoney + "円";
     }
 }

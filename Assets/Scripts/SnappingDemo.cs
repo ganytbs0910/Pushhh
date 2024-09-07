@@ -12,6 +12,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
     {
         [SerializeField] private SlotController[] _slotControllers;
         [SerializeField] private Coroutine[] _spinCoroutines;
+        private const float JACKPOT_PROBABILITY = 0.001f;
         [SerializeField] private int[] _predeterminedResult;
         [SerializeField] private int[] _snappedDataIndices;
         [SerializeField] private int _snapCount;
@@ -166,30 +167,46 @@ namespace EnhancedScrollerDemos.SnappingDemo
         private void DetermineResult()
         {
             float levelBonus = levelSystem.GetWinProbabilityBonus();
-            bool isWin = Random.value < (baseWinProbability + levelBonus);
             _predeterminedResult = new int[_slotControllers.Length];
-            if (isWin)
+
+            // 777（ジャックポット）の抽選
+            if (Random.value < JACKPOT_PROBABILITY)
             {
-                int winningNumber = Random.Range(0, slotSprites.Length);
+                // 777のインデックスを設定（スプライトの配列で7が6番目と仮定）
+                int jackpotIndex = 6;
                 for (int i = 0; i < _slotControllers.Length; i++)
                 {
-                    _predeterminedResult[i] = winningNumber;
+                    _predeterminedResult[i] = jackpotIndex;
                 }
-                //40%の確率で特殊効果を発動
-                if (Random.value < 0.4f) SpecialGachaEffect();
+                Debug.Log("777のジャックポットが当選しました！");
             }
             else
             {
-                for (int i = 0; i < _slotControllers.Length; i++)
+                // 通常の抽選ロジック
+                bool isWin = Random.value < (baseWinProbability + levelBonus);
+                if (isWin)
                 {
-                    _predeterminedResult[i] = Random.Range(0, slotSprites.Length);
+                    int winningNumber = Random.Range(0, slotSprites.Length);
+                    for (int i = 0; i < _slotControllers.Length; i++)
+                    {
+                        _predeterminedResult[i] = winningNumber;
+                    }
+                    //40%の確率で特殊効果を発動
+                    if (Random.value < 0.4f) SpecialGachaEffect();
                 }
-                if (_predeterminedResult.All(x => x == _predeterminedResult[0]))
+                else
                 {
-                    _predeterminedResult[_predeterminedResult.Length - 1] = (_predeterminedResult[0] + 1) % slotSprites.Length;
+                    for (int i = 0; i < _slotControllers.Length; i++)
+                    {
+                        _predeterminedResult[i] = Random.Range(0, slotSprites.Length);
+                    }
+                    if (_predeterminedResult.All(x => x == _predeterminedResult[0]))
+                    {
+                        _predeterminedResult[_predeterminedResult.Length - 1] = (_predeterminedResult[0] + 1) % slotSprites.Length;
+                    }
+                    //0.1%の確率で特殊効果を発動
+                    if (Random.value < 0.001f) SpecialGachaEffect();
                 }
-                //0.1%の確率で特殊効果を発動
-                if (Random.value < 0.001f) SpecialGachaEffect();
             }
             Debug.Log($"決定された数字: {string.Join(", ", _predeterminedResult.Select(x => x + 1))}");
         }

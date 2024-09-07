@@ -24,6 +24,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
         [SerializeField] private float spinInterval = 0.4f;
         [SerializeField] private float spinDuration = 3f;
         [SerializeField] private float baseWinProbability = 0.1f;
+        [SerializeField] private TMP_Text winningStatusText;
         [SerializeField] private TMP_Text resultText;
         [SerializeField] private bool[] _isSlotStopped;
         [SerializeField] private TMP_Text levelText;
@@ -68,6 +69,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
             {
                 slotController.Reload(slotSprites);
             }
+            winningStatusText.text = "";
         }
 
         public void ForceJackpot()
@@ -89,6 +91,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
 
         public void SpinButton_OnClick()
         {
+            winningStatusText.text = "";
             VibrationController.VibrateSelectionChanged();
             if (remainPullNumber <= 0)
             {
@@ -293,33 +296,40 @@ namespace EnhancedScrollerDemos.SnappingDemo
                     case 1:
                         // 経験値を獲得する
                         result = "1が3つ揃いました！小当たり！";
+                        winningStatusText.text = "経験値を獲得しました！";
                         break;
                     case 3:
                         // 課金クーポンを獲得
                         result = "3が3つ揃いました！中当たり！";
+                        winningStatusText.text = "課金クーポンを獲得しました！";
                         break;
                     case 5:
                         //　次回の当選確率を上昇
                         result = "5が3つ揃いました！大当たり！";
+                        winningStatusText.text = "次回の当選確率が上昇しました！";
                         break;
                     case 7:
+                        // 金額が当選
                         result = "777が揃いました！超大当たり！";
                         firebaseInitializer.winningAmount = (int)(firebaseInitializer.count * 0.1f + 1000);
                         PlayerPrefs.SetInt("PrizeMoneyInHandText", PlayerPrefs.GetInt("PrizeMoneyInHandText") + firebaseInitializer.winningAmount);
                         PlayerPrefs.SetInt("TotalWinningCount", PlayerPrefs.GetInt("TotalWinningCount") + 1);
                         uiController.TotalWinningCountTextUpdate();
                         firebaseInitializer.ResetCounter();
+                        winningStatusText.text = $"当選金額{firebaseInitializer.winningAmount}を獲得しました！";
                         break;
                     default:
                         //クレジットを3追加する
                         uiController.AddPullCredit(3).Forget();
                         result = $"{s1}が3つ揃いました！当たり！";
+                        winningStatusText.text = "クレジットを獲得しました！";
                         break;
                 }
             }
             else
             {
                 result = $"結果: {s1}, {s2}, {s3}。はずれ！";
+                winningStatusText.text = "はずれ！";
             }
             resultText.text = result;
         }

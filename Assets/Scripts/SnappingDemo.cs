@@ -95,7 +95,6 @@ namespace EnhancedScrollerDemos.SnappingDemo
             VibrationController.VibrateSelectionChanged();
             if (remainPullNumber <= 0)
             {
-                Debug.Log("残りプル数がありません");
                 uiController.LackCreditPanelOpen();
                 return;
             }

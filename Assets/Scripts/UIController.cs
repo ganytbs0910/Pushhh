@@ -14,7 +14,8 @@ public class UIController : MonoBehaviour
     [SerializeField] private Image shoppingPanel;
     [SerializeField] private Image lackCreditPanel;
     [SerializeField] private TMP_Text remainPullText;
-    [SerializeField] private TMP_Text prizeMoneyInHandText, totalWinningCountText, yourSpinCountText;
+    [SerializeField]
+    private TMP_Text prizeMoneyInHandText, totalWinningCountText, yourSpinCountText, maximumWinningAmountText;
     SnappingDemo snappingDemo;
 
     private CancellationTokenSource _cts = new CancellationTokenSource();
@@ -97,5 +98,11 @@ public class UIController : MonoBehaviour
     {
         if (!PlayerPrefs.HasKey("TotalWinningCount")) PlayerPrefs.SetInt("TotalWinningCount", 0);
         totalWinningCountText.text = PlayerPrefs.GetInt("TotalWinningCount") + "回";
+    }
+
+    //過去最高当選金額の更新
+    public void UpdateHighestPrizeMoney()
+    {
+        maximumWinningAmountText.text = "過去最高当選金額: " + PlayerPrefs.GetInt("HighestPrizeMoney") + "円";
     }
 }

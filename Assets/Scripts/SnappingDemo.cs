@@ -313,12 +313,16 @@ namespace EnhancedScrollerDemos.SnappingDemo
                         firebaseInitializer.winningAmount = (int)(firebaseInitializer.count * 0.1f + 1000);
                         PlayerPrefs.SetInt("PrizeMoneyInHandText", PlayerPrefs.GetInt("PrizeMoneyInHandText") + firebaseInitializer.winningAmount);
                         PlayerPrefs.SetInt("TotalWinningCount", PlayerPrefs.GetInt("TotalWinningCount") + 1);
+                        if (PlayerPrefs.GetInt("MaximumWinningAmount") < firebaseInitializer.winningAmount)
+                        {
+                            PlayerPrefs.SetInt("MaximumWinningAmount", firebaseInitializer.winningAmount);
+                            uiController.UpdateHighestPrizeMoney();
+                        }
                         uiController.TotalWinningCountTextUpdate();
                         firebaseInitializer.ResetCounter();
                         winningStatusText.text = $"当選金額{firebaseInitializer.winningAmount}を獲得しました！";
                         break;
                     default:
-                        //クレジットを3追加する
                         uiController.AddPullCredit(3).Forget();
                         result = $"{s1}が3つ揃いました！当たり！";
                         winningStatusText.text = "クレジットを獲得しました！";

@@ -10,7 +10,6 @@ using Cysharp.Threading.Tasks;
 public class FirebaseInitializer : MonoBehaviour
 {
     public Button incrementButton;
-    public TextMeshProUGUI allCountText;
     public TextMeshProUGUI currentWinningAmount;
     public TextMeshProUGUI userIdText;
 
@@ -35,9 +34,10 @@ public class FirebaseInitializer : MonoBehaviour
         }
         catch (Exception ex)
         {
-            Debug.LogError($"Error in Start: {ex.Message}\nStackTrace: {ex.StackTrace}");
+            Debug.LogError($"Start内でエラーが発生しました: {ex.Message}\nスタックトレース: {ex.StackTrace}");
         }
     }
+
     private async UniTask InitializeFirebaseAsync()
     {
         var dependencyStatus = await FirebaseApp.CheckAndFixDependenciesAsync();
@@ -52,17 +52,16 @@ public class FirebaseInitializer : MonoBehaviour
                 {
                     bool connected = (bool)e.Snapshot.Value;
                 };
-                await database.RootReference.Child("test").SetValueAsync("Connection test");
             }
             catch (Exception ex)
             {
-                Debug.LogError($"Firebase initialization error: {ex.GetType().Name} - {ex.Message}");
-                Debug.LogError($"StackTrace: {ex.StackTrace}");
+                Debug.LogError($"Firebase初期化エラー: {ex.GetType().Name} - {ex.Message}");
+                Debug.LogError($"スタックトレース: {ex.StackTrace}");
             }
         }
         else
         {
-            Debug.LogError($"Could not resolve all Firebase dependencies: {dependencyStatus}");
+            Debug.LogError($"Firebaseの依存関係を解決できませんでした: {dependencyStatus}");
         }
     }
 
@@ -75,21 +74,18 @@ public class FirebaseInitializer : MonoBehaviour
             PlayerPrefs.SetString("UserId", userId);
             PlayerPrefs.Save();
 
-            // Firebaseにユーザー情報を保存
             await dbReference.Child("users").Child(userId).SetValueAsync(new Dictionary<string, object>
             {
                 { "createdAt", DateTime.UtcNow.ToString("o") },
                 { "lastLogin", DateTime.UtcNow.ToString("o") },
-                { "balance", 0 } // 初期残高を0に設定
+                { "balance", 0 }
             });
         }
         else
         {
-            // 既存ユーザーの場合、最終ログイン時間を更新
             await dbReference.Child("users").Child(userId).Child("lastLogin").SetValueAsync(DateTime.UtcNow.ToString("o"));
         }
 
-        // ユーザーの残高を同期
         await SyncUserBalance();
 
         userIdText.text = $"ユーザーIDは「{userId}」です。 ";
@@ -105,25 +101,23 @@ public class FirebaseInitializer : MonoBehaviour
                 int firebaseBalance = Convert.ToInt32(balanceSnapshot.Value);
                 int localBalance = PlayerPrefs.GetInt("PrizeMoneyInHand", 0);
 
-                // ローカルの残高とFirebaseの残高が異なる場合、Firebaseの値を使用
                 if (firebaseBalance != localBalance)
                 {
                     PlayerPrefs.SetInt("PrizeMoneyInHand", firebaseBalance);
                     PlayerPrefs.Save();
-                    Debug.Log($"User balance synced from Firebase: {firebaseBalance}");
+                    Debug.Log($"ユーザーの残高をFirebaseから同期しました: {firebaseBalance}");
                 }
             }
             else
             {
-                // Firebaseに残高が存在しない場合、ローカルの値を使用して初期化
                 int localBalance = PlayerPrefs.GetInt("PrizeMoneyInHand", 0);
                 await dbReference.Child("users").Child(userId).Child("balance").SetValueAsync(localBalance);
-                Debug.Log($"Initial user balance set in Firebase: {localBalance}");
+                Debug.Log($"初期ユーザー残高をFirebaseに設定しました: {localBalance}");
             }
         }
         catch (Exception ex)
         {
-            Debug.LogError($"Failed to sync user balance: {ex.Message}");
+            Debug.LogError($"ユーザー残高の同期に失敗しました: {ex.Message}");
         }
     }
 
@@ -147,10 +141,6 @@ public class FirebaseInitializer : MonoBehaviour
 
     private void UpdateCounterDisplay()
     {
-        if (allCountText != null)
-        {
-            allCountText.text = $"{count}回";
-        }
         if (currentWinningAmount != null)
         {
             winningAmount = (int)(count * 0.1f) + 1000;
@@ -162,52 +152,39 @@ public class FirebaseInitializer : MonoBehaviour
     {
         try
         {
-            Debug.Log("ResetCounter started");
+            Debug.Log("カウンターリセットを開始しました");
 
             if (uiController == null)
             {
-                Debug.LogError("UIController is not set. Please assign it in the Inspector.");
+                Debug.LogError("UIControllerが設定されていません。Inspectorで割り当ててください。");
                 return;
             }
 
-            // 現在の所持金額を取得
             int currentBalance = PlayerPrefs.GetInt("PrizeMoneyInHand", 0);
-
-            // 当選金額を加算
             int newBalance = currentBalance + winningAmount;
 
-            // ローカルの所持金額を更新
             PlayerPrefs.SetInt("PrizeMoneyInHand", newBalance);
             PlayerPrefs.Save();
-
-            // UIを更新
             uiController.PrizeMoneyInHandTextUpdate(newBalance);
-            Debug.Log($"1. PrizeMoneyInHandTextUpdate called with new balance: {newBalance}");
 
-            // Firebaseの残高を更新
             if (dbReference != null)
             {
                 await dbReference.Child("users").Child(userId).Child("balance").SetValueAsync(newBalance);
-                Debug.Log($"2. Firebase balance updated to: {newBalance}");
             }
             else
             {
-                Debug.LogError("dbReference is null. Firebase might not be initialized properly.");
+                Debug.LogError("dbReferenceがnullです。Firebaseが正しく初期化されていない可能性があります。");
             }
 
-            // カウンターと当選金額をリセット
             count = 0;
             SaveCounterToPlayerPrefs();
             winningAmount = 0;
             UpdateCounterDisplay();
-            Debug.Log("3. Counter and winning amount reset, display updated");
-
-            Debug.Log("Counter reset successfully");
         }
         catch (Exception ex)
         {
-            Debug.LogError($"Failed to reset counter: {ex.GetType().Name} - {ex.Message}");
-            Debug.LogError($"StackTrace: {ex.StackTrace}");
+            Debug.LogError($"カウンターのリセットに失敗しました: {ex.GetType().Name} - {ex.Message}");
+            Debug.LogError($"スタックトレース: {ex.StackTrace}");
         }
     }
 
@@ -215,7 +192,7 @@ public class FirebaseInitializer : MonoBehaviour
     {
         if (string.IsNullOrEmpty(userId))
         {
-            Debug.LogError("User ID is not initialized");
+            Debug.LogError("ユーザーIDが初期化されていません");
             return;
         }
 
@@ -228,7 +205,6 @@ public class FirebaseInitializer : MonoBehaviour
 
             uiController.PrizeMoneyInHandTextUpdate(newBalance);
 
-            // 当選記録を作成
             Dictionary<string, object> winningRecord = new Dictionary<string, object>
             {
                 { "userId", userId },
@@ -237,25 +213,21 @@ public class FirebaseInitializer : MonoBehaviour
                 { "timestamp", DateTime.UtcNow.ToString("o") }
             };
 
-            // ユーザーの当選履歴に新しいレコードを追加
             DatabaseReference newWinRef = dbReference.Child("users").Child(userId).Child("winnings").Push();
             await newWinRef.SetValueAsync(winningRecord);
 
-            // 全体の当選履歴にも追加
             await dbReference.Child("globalWinnings").Push().SetValueAsync(winningRecord);
 
-            // ユーザーの現在の残高を更新
             await dbReference.Child("users").Child(userId).Child("balance").SetValueAsync(newBalance);
 
-            Debug.Log($"Winning record saved successfully. Amount: {winningAmount}, New Balance: {newBalance}, Record key: {newWinRef.Key}");
+            Debug.Log($"当選記録の保存に成功しました。金額: {winningAmount}, 新しい残高: {newBalance}, レコードキー: {newWinRef.Key}");
 
-            // ユーザーの累計当選金額を更新
             await UpdateTotalWinningsAsync(winningAmount);
         }
         catch (Exception ex)
         {
-            Debug.LogError($"Failed to record winning: {ex.Message}");
-            Debug.LogError($"StackTrace: {ex.StackTrace}");
+            Debug.LogError($"当選の記録に失敗しました: {ex.Message}");
+            Debug.LogError($"スタックトレース: {ex.StackTrace}");
         }
     }
 
@@ -270,7 +242,7 @@ public class FirebaseInitializer : MonoBehaviour
         }
         catch (Exception ex)
         {
-            Debug.LogError($"Failed to update total winnings: {ex.Message}");
+            Debug.LogError($"累計当選金額の更新に失敗しました: {ex.Message}");
         }
     }
 }

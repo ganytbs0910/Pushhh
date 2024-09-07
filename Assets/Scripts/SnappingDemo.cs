@@ -100,8 +100,6 @@ namespace EnhancedScrollerDemos.SnappingDemo
             {
                 remainPullNumber--;
                 PlayerPrefs.SetInt("remainPullNumber", remainPullNumber);
-                uiController.RemainCreditTextUpdate();
-                uiController.YourSpinCountTextUpdate();
             }
             // デバッグ用: キーボードのJキーを押すとジャックポットが強制的に発生
             if (Input.GetKey(KeyCode.J))
@@ -118,6 +116,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
             levelSystem.AddExp(10);
             UpdateLevelUI();
             SaveLevelData();
+            uiController.RemainCreditTextUpdate();
         }
 
         private void ResetSlots()
@@ -158,6 +157,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
             {
                 CheckResult();
                 EnableSpinButton();
+                uiController.YourSpinCountTextUpdate();
             }
         }
 
@@ -306,6 +306,8 @@ namespace EnhancedScrollerDemos.SnappingDemo
                         result = "777が揃いました！超大当たり！";
                         firebaseInitializer.winningAmount = (int)(firebaseInitializer.count * 0.1f + 1000);
                         PlayerPrefs.SetInt("PrizeMoneyInHandText", PlayerPrefs.GetInt("PrizeMoneyInHandText") + firebaseInitializer.winningAmount);
+                        PlayerPrefs.SetInt("TotalWinningCount", PlayerPrefs.GetInt("TotalWinningCount") + 1);
+                        uiController.TotalWinningCountTextUpdate();
                         firebaseInitializer.ResetCounter();
                         break;
                     default:

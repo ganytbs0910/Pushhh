@@ -5172,7 +5172,7 @@ GameObject:
   - component: {fileID: 396864674}
   - component: {fileID: 396864673}
   m_Layer: 5
-  m_Name: Panel (1)
+  m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5977,7 +5977,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7481673137802385621, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
       propertyPath: m_text
-      value: "2\u56DE"
+      value: "0\u56DE"
       objectReference: {fileID: 0}
     - target: {fileID: 7481673137802385621, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
       propertyPath: m_fontSize
@@ -6005,7 +6005,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7481673137802385623, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
       propertyPath: m_Name
-      value: TMP_Text (3)
+      value: TotalWinningCount
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
@@ -11377,7 +11377,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7481673137802385623, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
       propertyPath: m_Name
-      value: TMP_Text (1)
+      value: AllCountTitleText
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
@@ -12797,7 +12797,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7481673137802385623, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
       propertyPath: m_Name
-      value: TMP_Text (2)
+      value: TotalWinningCountTitle
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
@@ -14832,12 +14832,12 @@ GameObject:
   - component: {fileID: 923232466}
   - component: {fileID: 923232465}
   m_Layer: 5
-  m_Name: Panel (3)
+  m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &923232464
 RectTransform:
   m_ObjectHideFlags: 0
@@ -19054,7 +19054,7 @@ GameObject:
   - component: {fileID: 1232625262}
   - component: {fileID: 1232625261}
   m_Layer: 5
-  m_Name: Panel (2)
+  m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19980,6 +19980,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1291258352 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7481673137802385621, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
+  m_PrefabInstance: {fileID: 466942334}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1293240963
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24349,17 +24360,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
---- !u!114 &1543951781 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7481673137802385621, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
-  m_PrefabInstance: {fileID: 1543951780}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &1543951782 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7481673137802385620, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
@@ -25959,7 +25959,7 @@ GameObject:
   - component: {fileID: 1636579290}
   - component: {fileID: 1636579289}
   m_Layer: 5
-  m_Name: Panel (1)
+  m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31095,7 +31095,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7481673137802385623, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
       propertyPath: m_Name
-      value: TMP_Text (4)
+      value: MaxWinningAmount
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
@@ -31122,7 +31122,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   incrementButton: {fileID: 1555902081}
-  allCountText: {fileID: 1543951781}
   currentWinningAmount: {fileID: 2010002047}
   userIdText: {fileID: 1734079806}
   count: 0
@@ -32224,7 +32223,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7481673137802385623, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
       propertyPath: m_Name
-      value: TMP_Text
+      value: TitleText
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
@@ -32484,7 +32483,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7481673137802385623, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
       propertyPath: m_Name
-      value: TMP_Text (3)
+      value: MaxWinningAmountTitle
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
@@ -36087,6 +36086,7 @@ MonoBehaviour:
   lackCreditPanel: {fileID: 853708005}
   remainPullText: {fileID: 1868548085}
   prizeMoneyInHandText: {fileID: 2142570100}
+  totalWinningCountText: {fileID: 1291258352}
   yourSpinCountText: {fileID: 1794150638}
 --- !u!114 &8415450043199573483
 MonoBehaviour:

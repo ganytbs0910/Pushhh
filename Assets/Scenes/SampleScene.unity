@@ -514,7 +514,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7481673137802385620, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 1255.51
+      value: 1325.26
       objectReference: {fileID: 0}
     - target: {fileID: 7481673137802385620, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -550,7 +550,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7481673137802385620, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -825.41504
+      value: -860.29004
       objectReference: {fileID: 0}
     - target: {fileID: 7481673137802385620, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -566,8 +566,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7481673137802385621, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
       propertyPath: m_text
-      value: "1. \u30B2\u30FC\u30E0\u5185\u3067\u7372\u5F97\u3057\u305F\u30B3\u30A4\u30F3\u306F\u30011\u30B3\u30A4\u30F3\uFF1D1\u5186\u3068\u3057\u3066\u63DB\u91D1\u3067\u304D\u307E\u3059\u3002\n\n2.
-        \u63DB\u91D1\u7533\u8ACB\u306F\u3001\u30DE\u30A4\u30DA\u30FC\u30B8\u306E\u300C\u63DB\u91D1\u7533\u8ACB\u300D\u30DC\u30BF\u30F3\u304B\u3089\u884C\u3048\u307E\u3059\u3002\n\n3.
+      value: "1. \u30B2\u30FC\u30E0\u5185\u3067\u7372\u5F97\u3057\u305F\u30B3\u30A4\u30F3\u306F\u30011\u30B3\u30A4\u30F3\uFF1D1\u5186\u3068\u3057\u3066\u63DB\u91D1\u3067\u304D\u307E\u3059\u3002\n\n2.\u63DB\u91D1\u7533\u8ACB\u306F\u3001\u4F5C\u8005\u306E\u60F3\u3044\u2192X\u306EDM\u306B\u3066\u300C\u500B\u4EBA\u756A\u53F7\u3068\u7533\u8ACB\u91D1\u984D\u300D\u3092\u9001\u4ED8\u306B\u3066\u3067\u304D\u307E\u3059\u3002\n\n3.
         \u6700\u4F4E\u63DB\u91D1\u984D\u306F10,000\u5186\u304B\u3089\u3067\u3059\u3002\n\n4.\u63DB\u91D1\u7533\u8ACB\u5F8C\u3001\u5BE9\u67FB\u3092\u7D4C\u30663\u301C5\u55B6\u696D\u65E5\u4EE5\u5185\u306B\u6307\u5B9A\u306E\u9280\u884C\u53E3\u5EA7\u306B\u632F\u308A\u8FBC\u307E\u308C\u307E\u3059\u3002\n\n5.
         \u63DB\u91D1\u6642\u306B\u767A\u751F\u3059\u308B\u624B\u6570\u6599\u306F\u5F53\u793E\u304C\u8CA0\u62C5\u3057\u307E\u3059\u3002\n\n\u6CE8\u610F\uFF1A\u4E0D\u6B63\u884C\u70BA\u304C\u78BA\u8A8D\u3055\u308C\u305F\u5834\u5408\u3001\u30A2\u30AB\u30A6\u30F3\u30C8\u306E\u505C\u6B62\u304A\u3088\u3073\u8CDE\u91D1\u306E\u6CA1\u53CE\u5BFE\u8C61\u3068\u306A\u308A\u307E\u3059\u3002"
       objectReference: {fileID: 0}
@@ -4050,7 +4049,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 1453.17}
+  m_SizeDelta: {x: 0, y: 1522.92}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &248002271
 MonoBehaviour:
@@ -7064,7 +7063,7 @@ GameObject:
   - component: {fileID: 512033188}
   - component: {fileID: 512033187}
   m_Layer: 5
-  m_Name: Privacy
+  m_Name: AuthorThoughtsPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7189,7 +7188,7 @@ GameObject:
   - component: {fileID: 516503958}
   - component: {fileID: 516503957}
   m_Layer: 5
-  m_Name: ReceivePrizeMoney
+  m_Name: MoneyInPossessionPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9142,7 +9141,7 @@ GameObject:
   - component: {fileID: 574454924}
   - component: {fileID: 574454923}
   m_Layer: 5
-  m_Name: HowToPlay
+  m_Name: HowToPlayPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10381,7 +10380,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1863981320}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.65773636
+  m_Size: 0.59097
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -15537,7 +15536,7 @@ RectTransform:
   m_Father: {fileID: 1783126616}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5492907}
+  m_AnchorMin: {x: 0, y: 0.57558787}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
@@ -16905,7 +16904,7 @@ GameObject:
   - component: {fileID: 968556542}
   - component: {fileID: 968556541}
   m_Layer: 5
-  m_Name: Privacy
+  m_Name: PrivacyPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19146,7 +19145,7 @@ GameObject:
   - component: {fileID: 1138559300}
   - component: {fileID: 1138559299}
   m_Layer: 5
-  m_Name: ReceivePrizeMoney
+  m_Name: ReceivePrizeMoneyPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19539,7 +19538,7 @@ GameObject:
   - component: {fileID: 1163407795}
   - component: {fileID: 1163407794}
   m_Layer: 5
-  m_Name: Level
+  m_Name: LevelPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29459,7 +29458,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 884343294}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.45070928
+  m_Size: 0.42441216
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -32159,7 +32158,7 @@ GameObject:
   - component: {fileID: 1768296544}
   - component: {fileID: 1768296543}
   m_Layer: 5
-  m_Name: ReceivePrizeMoneyButton
+  m_Name: MoneyInPossessionButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33420,7 +33419,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u8CDE\u91D1\u53D7\u53D6"
+  m_text: "\u6240\u6301\u91D1"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 840896a8ec0864a55ac50e5c3268a590, type: 2}
   m_sharedMaterial: {fileID: -1242912046036428332, guid: 840896a8ec0864a55ac50e5c3268a590, type: 2}
@@ -34094,7 +34093,7 @@ RectTransform:
   m_Father: {fileID: 1627937738}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.34226364}
+  m_AnchorMin: {x: 0, y: 0.40903002}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
@@ -40092,6 +40091,7 @@ GameObject:
   - component: {fileID: 8415450043199573484}
   - component: {fileID: 8415450043199573483}
   - component: {fileID: 8415450043199573482}
+  - component: {fileID: 8415450043199573487}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -40371,3 +40371,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scroller: {fileID: 779527998}
   slotCellViewPrefab: {fileID: 11485864, guid: d0c377099bcb10a409836efed66887f4, type: 3}
+--- !u!114 &8415450043199573487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2481175256052852314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f26c1e6d74b1a4cb38c2aefdb17de6dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerStatusPanel: {fileID: 33355909}
+  upperToggle: {fileID: 1687458361}
+  middlePanel: {fileID: 967666340}
+  underPanel: {fileID: 546804918}
+  infoPanel: {fileID: 979531280}
+  MyPagePanel: {fileID: 2047892664}
+  winnningsPanel: {fileID: 941411499}
+  settingPanel: {fileID: 1416524374}
+  addCreditCompletePanel: {fileID: 652154200}
+  LackCreditPanel: {fileID: 853708002}
+  shoppingPanel: {fileID: 1790402796}
+  howToPlayPanel: {fileID: 574454918}
+  recrivePrizeMoneyPanel: {fileID: 1138559294}
+  authorThoughts: {fileID: 512033182}
+  levelPanel: {fileID: 1163407789}
+  moneyInProssessionPanel: {fileID: 516503952}
+  privacyPanel: {fileID: 968556536}

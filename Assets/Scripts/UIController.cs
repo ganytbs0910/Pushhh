@@ -52,6 +52,7 @@ public class UIController : MonoBehaviour
         PrizeMoneyInHandTextUpdate(PlayerPrefs.GetInt("PrizeMoneyInHandText"));
         YourSpinCountTextUpdate();
         TotalWinningCountTextUpdate();
+        UpdateHighestPrizeMoney();
     }
 
     void OnDestroy()
@@ -103,6 +104,6 @@ public class UIController : MonoBehaviour
     //過去最高当選金額の更新
     public void UpdateHighestPrizeMoney()
     {
-        maximumWinningAmountText.text = "過去最高当選金額: " + PlayerPrefs.GetInt("HighestPrizeMoney") + "円";
+        maximumWinningAmountText.text = PlayerPrefs.GetInt("HighestPrizeMoney") + "円";
     }
 }

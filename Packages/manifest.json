@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.benoitfreslon.vibration": "https://github.com/BenoitFreslon/Vibration.git",
     "com.coffee.unmask": "https://github.com/mob-sakai/UnmaskForUGUI.git",
     "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
     "com.unity.collab-proxy": "1.17.6",

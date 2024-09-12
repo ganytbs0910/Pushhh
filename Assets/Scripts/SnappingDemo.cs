@@ -116,6 +116,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
                 DetermineResult();
                 StartCoroutine(SpinAll());
             }
+            firebaseInitializer.IncrementGlobalSlotCount();
             levelSystem.AddExp(10);
             UpdateLevelUI();
             SaveLevelData();

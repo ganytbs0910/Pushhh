@@ -82,7 +82,7 @@ public class UIController : MonoBehaviour
         lackCreditPanel.gameObject.SetActive(true);
     }
 
-    // 当選金額を表示する
+    // 所持金額を表示する
     public void PrizeMoneyInHandTextUpdate(int prizeMoney)
     {
         prizeMoneyInHandText.text = "所持金額: " + prizeMoney + "円";

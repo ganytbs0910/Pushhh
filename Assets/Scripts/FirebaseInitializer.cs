@@ -4,6 +4,7 @@ using Firebase;
 using Firebase.Database;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 using TMPro;
 using Cysharp.Threading.Tasks;
 
@@ -12,6 +13,8 @@ public class FirebaseInitializer : MonoBehaviour
     public Button incrementButton;
     public TextMeshProUGUI currentWinningAmount;
     public TextMeshProUGUI userIdText;
+    private int globalSlotCount = 0;
+    private DatabaseReference globalSlotCountRef;
 
     public int count = 0;
     public int winningAmount = 0;
@@ -48,10 +51,7 @@ public class FirebaseInitializer : MonoBehaviour
                 FirebaseApp app = FirebaseApp.DefaultInstance;
                 FirebaseDatabase database = FirebaseDatabase.GetInstance(app, databaseUrl);
                 dbReference = database.RootReference;
-                database.RootReference.Child(".info/connected").ValueChanged += (object sender, ValueChangedEventArgs e) =>
-                {
-                    bool connected = (bool)e.Snapshot.Value;
-                };
+                globalSlotCountRef = database.RootReference.Child("globalSlotCount");
             }
             catch (Exception ex)
             {
@@ -63,6 +63,7 @@ public class FirebaseInitializer : MonoBehaviour
         {
             Debug.LogError($"Firebaseの依存関係を解決できませんでした: {dependencyStatus}");
         }
+        await UpdateGlobalSlotCount();
     }
 
     private async UniTask InitializeUserAsync()
@@ -70,25 +71,28 @@ public class FirebaseInitializer : MonoBehaviour
         userId = PlayerPrefs.GetString("UserId", "");
         if (string.IsNullOrEmpty(userId))
         {
-            userId = Guid.NewGuid().ToString();
+            userId = GenerateShortUserId(8); // 8文字のユーザーIDを生成
             PlayerPrefs.SetString("UserId", userId);
             PlayerPrefs.Save();
 
             await dbReference.Child("users").Child(userId).SetValueAsync(new Dictionary<string, object>
-            {
-                { "createdAt", DateTime.UtcNow.ToString("o") },
-                { "lastLogin", DateTime.UtcNow.ToString("o") },
-                { "balance", 0 }
-            });
-        }
-        else
         {
-            await dbReference.Child("users").Child(userId).Child("lastLogin").SetValueAsync(DateTime.UtcNow.ToString("o"));
+            { "createdAt", DateTime.UtcNow.ToString("o") },
+            { "balance", 0 }
+        });
         }
 
         await SyncUserBalance();
 
         userIdText.text = $"ユーザーIDは「{userId}」です。 ";
+    }
+
+    private string GenerateShortUserId(int length)
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        var random = new System.Random();
+        return new string(Enumerable.Repeat(chars, length)
+            .Select(s => s[random.Next(s.Length)]).ToArray());
     }
 
     private async UniTask SyncUserBalance()
@@ -143,7 +147,7 @@ public class FirebaseInitializer : MonoBehaviour
     {
         if (currentWinningAmount != null)
         {
-            winningAmount = (int)(count * 0.1f) + 1000;
+            winningAmount = (int)(globalSlotCount * 0.1f) + 1000;
             currentWinningAmount.text = $"現在の当選金額: {winningAmount}円";
         }
     }
@@ -243,6 +247,46 @@ public class FirebaseInitializer : MonoBehaviour
         catch (Exception ex)
         {
             Debug.LogError($"累計当選金額の更新に失敗しました: {ex.Message}");
+        }
+    }
+
+    //Firebaseで全ユーザーの回転数を取得
+    private async UniTask UpdateGlobalSlotCount()
+    {
+        try
+        {
+            var snapshot = await globalSlotCountRef.GetValueAsync();
+            if (snapshot.Exists)
+            {
+                globalSlotCount = Convert.ToInt32(snapshot.Value);
+            }
+            else
+            {
+                globalSlotCount = 0;
+                await globalSlotCountRef.SetValueAsync(0);
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"グローバルスロットカウントの更新に失敗しました: {ex.Message}");
+        }
+    }
+
+    public async UniTask IncrementGlobalSlotCount()
+    {
+        try
+        {
+            await globalSlotCountRef.RunTransaction(mutableData =>
+            {
+                int currentValue = mutableData.Value != null ? Convert.ToInt32(mutableData.Value) : 0;
+                mutableData.Value = currentValue + 1;
+                return TransactionResult.Success(mutableData);
+            });
+            await UpdateGlobalSlotCount();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"グローバルスロットカウントの増加に失敗しました: {ex.Message}");
         }
     }
 }

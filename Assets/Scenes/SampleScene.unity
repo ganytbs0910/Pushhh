@@ -2014,7 +2014,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 118109774}
+  m_TargetGraphic: {fileID: 0}
   toggleTransition: 1
   graphic: {fileID: 0}
   m_Group: {fileID: 1662263219}
@@ -9926,7 +9926,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 0
-  m_TargetGraphic: {fileID: 595292384}
+  m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -10839,7 +10839,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7481673137802385620, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 1325.26
+      value: 1545.78
       objectReference: {fileID: 0}
     - target: {fileID: 7481673137802385620, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -10875,7 +10875,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7481673137802385620, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -860.29004
+      value: -970.55005
       objectReference: {fileID: 0}
     - target: {fileID: 7481673137802385620, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -12846,7 +12846,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 476.5, y: -1920.5801}
+  m_AnchoredPosition: {x: 476.5, y: -2141.1}
   m_SizeDelta: {x: 853, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &743699228
@@ -14850,7 +14850,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 846876444}
+  m_TargetGraphic: {fileID: 0}
   toggleTransition: 1
   graphic: {fileID: 0}
   m_Group: {fileID: 1662263219}
@@ -15536,8 +15536,8 @@ RectTransform:
   m_Father: {fileID: 1783126616}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.57558787}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0, y: 0.094195046}
+  m_AnchorMax: {x: 1, y: 0.47862968}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -16431,8 +16431,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -4.6566e-10, y: 0.000065047294}
-  m_SizeDelta: {x: 0, y: 2120.58}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 2341.1}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &931607408
 MonoBehaviour:
@@ -21416,7 +21416,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7481673137802385620, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -1621.75
+      value: -1842.27
       objectReference: {fileID: 0}
     - target: {fileID: 7481673137802385620, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -23204,7 +23204,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 0
-  m_TargetGraphic: {fileID: 1315416671}
+  m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -26925,7 +26925,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 0
-  m_TargetGraphic: {fileID: 1537823642}
+  m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -28292,7 +28292,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 0
-  m_TargetGraphic: {fileID: 1605279623}
+  m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -29501,8 +29501,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 884343295}
   m_HandleRect: {fileID: 884343294}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.42441216
+  m_Value: 0.153022
+  m_Size: 0.38443464
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -31715,7 +31715,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 1732404680}
+  m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -32269,7 +32269,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 1768296545}
+  m_TargetGraphic: {fileID: 0}
   toggleTransition: 1
   graphic: {fileID: 0}
   m_Group: {fileID: 1662263219}
@@ -35016,7 +35016,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 1884337628}
+  m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []

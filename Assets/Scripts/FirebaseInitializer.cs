@@ -164,6 +164,7 @@ public class FirebaseInitializer : MonoBehaviour
                 return;
             }
 
+            // ローカルカウンターのリセット
             int currentBalance = PlayerPrefs.GetInt("PrizeMoneyInHand", 0);
             int newBalance = currentBalance + winningAmount;
 
@@ -173,7 +174,11 @@ public class FirebaseInitializer : MonoBehaviour
 
             if (dbReference != null)
             {
+                // ユーザーの残高を更新
                 await dbReference.Child("users").Child(userId).Child("balance").SetValueAsync(newBalance);
+
+                // グローバルスロットカウントをリセット
+                await ResetGlobalSlotCount();
             }
             else
             {
@@ -188,6 +193,30 @@ public class FirebaseInitializer : MonoBehaviour
         catch (Exception ex)
         {
             Debug.LogError($"カウンターのリセットに失敗しました: {ex.GetType().Name} - {ex.Message}");
+            Debug.LogError($"スタックトレース: {ex.StackTrace}");
+        }
+    }
+
+    private async UniTask ResetGlobalSlotCount()
+    {
+        try
+        {
+            // トランザクションを使用してグローバルスロットカウントをリセット
+            await globalSlotCountRef.RunTransaction(mutableData =>
+            {
+                mutableData.Value = 0;
+                return TransactionResult.Success(mutableData);
+            });
+
+            globalSlotCount = 0;
+            Debug.Log("グローバルスロットカウントが正常にリセットされました。");
+
+            // カウンターディスプレイを更新
+            UpdateCounterDisplay();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"グローバルスロットカウントのリセットに失敗しました: {ex.Message}");
             Debug.LogError($"スタックトレース: {ex.StackTrace}");
         }
     }

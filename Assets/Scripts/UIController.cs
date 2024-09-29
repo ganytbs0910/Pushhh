@@ -13,6 +13,9 @@ public class UIController : MonoBehaviour
     [SerializeField] private Image shoppingPanel;
     [SerializeField] private Image lackCreditPanel;
     [SerializeField] private Image winningPanel;
+    [SerializeField] private Transform newsContent;
+    [SerializeField] private TMP_Text newsText;
+    [SerializeField] private Image surprisedImage;
     [SerializeField] private TMP_Text remainPullText;
     [SerializeField] private TMP_Text prizeMoneyInHandText, totalWinningCountText, yourSpinCountText, maximumWinningAmountText;
     private SnappingDemo snappingDemo;
@@ -87,5 +90,12 @@ public class UIController : MonoBehaviour
         if (!PlayerPrefs.HasKey("TotalWinningCount")) PlayerPrefs.SetInt("TotalWinningCount", 0);
         totalWinningCountText.text = $"{PlayerPrefs.GetInt("TotalWinningCount")}回";
         maximumWinningAmountText.text = $"{PlayerPrefs.GetInt("HighestPrizeMoney")}円";
+    }
+
+    public void NewsTextUpdate(int winningAmount)
+    {
+        TMP_Text news = Instantiate(newsText, newsContent);
+        news.text = $"【{System.DateTime.Now.ToString("HH:mm")}】 ゲストプレイさんが{winningAmount}円当選しました！";
+        surprisedImage.gameObject.SetActive(true);
     }
 }

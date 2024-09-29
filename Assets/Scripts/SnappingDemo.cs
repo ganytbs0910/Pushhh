@@ -19,7 +19,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
 
         private LevelSystem levelSystem;
         public int remainPullNumber;
-        private const float WinningProbability = 0.000001f;
+        private const float WinningProbability = 1f;
         private const float BASE_WIN_PROBABILITY = 0.1f;
         private const int MAX_RESULT = 7;
         [SerializeField] private FirebaseInitializer firebaseInitializer;
@@ -188,8 +188,9 @@ namespace EnhancedScrollerDemos.SnappingDemo
             {
                 await firebaseInitializer.ResetCounter();
                 int winningAmount = await firebaseInitializer.CalculateWinningAmount();
-                await firebaseInitializer.SaveWinningAmount(winningAmount);
+                //await firebaseInitializer.SaveWinningAmount(winningAmount);
                 uiController.TotalWinningCountTextUpdate();
+                uiController.NewsTextUpdate(winningAmount);
                 return 0;
             }
             return Random.Range(0, cardData.cards.Count);

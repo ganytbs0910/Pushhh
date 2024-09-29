@@ -188,7 +188,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
             {
                 await firebaseInitializer.ResetCounter();
                 int winningAmount = await firebaseInitializer.CalculateWinningAmount();
-                //await firebaseInitializer.SaveWinningAmount(winningAmount);
+                await firebaseInitializer.RecordWinning(winningAmount);  // Add this line
                 uiController.TotalWinningCountTextUpdate();
                 uiController.NewsTextUpdate(winningAmount);
                 return 0;

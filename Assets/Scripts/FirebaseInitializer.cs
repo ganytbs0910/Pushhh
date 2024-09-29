@@ -79,7 +79,6 @@ public class FirebaseInitializer : MonoBehaviour
 
             await dbReference.Child("users").Child(userId).SetValueAsync(new Dictionary<string, object>
             {
-                { "createdAt", DateTime.UtcNow.ToString("o") },
                 { "balance", 0 }
             });
         }
@@ -240,22 +239,13 @@ public class FirebaseInitializer : MonoBehaviour
 
             uiController.PrizeMoneyInHandTextUpdate(newBalance);
 
-            Dictionary<string, object> winningRecord = new Dictionary<string, object>
-            {
-                { "userId", userId },
-                { "winningAmount", winAmount },
-                { "newBalance", newBalance },
-                { "timestamp", DateTime.UtcNow.ToString("o") }
-            };
-
-            DatabaseReference newWinRef = dbReference.Child("users").Child(userId).Child("winnings").Push();
-            await newWinRef.SetValueAsync(winningRecord);
-
-            await dbReference.Child("users").Child(userId).Child("balance").SetValueAsync(newBalance);
-
-            Debug.Log($"当選記録の保存に成功しました。金額: {winAmount}, 新しい残高: {newBalance}, レコードキー: {newWinRef.Key}");
-
             await UpdateTotalWinningsAsync(winAmount);
+
+            // Update YourSpinCount
+            int spinCount = PlayerPrefs.GetInt("LocalCounter", 0) + 1;
+            PlayerPrefs.SetInt("LocalCounter", spinCount);
+            PlayerPrefs.Save();
+            uiController.YourSpinCountTextUpdate();
         }
         catch (Exception ex)
         {
@@ -263,6 +253,7 @@ public class FirebaseInitializer : MonoBehaviour
             Debug.LogError($"スタックトレース: {ex.StackTrace}");
         }
     }
+
 
     private async UniTask UpdateTotalWinningsAsync(int newWinAmount)
     {
@@ -272,6 +263,21 @@ public class FirebaseInitializer : MonoBehaviour
             int currentTotal = totalWinningsSnapshot.Exists ? Convert.ToInt32(totalWinningsSnapshot.Value) : 0;
             int newTotal = currentTotal + newWinAmount;
             await dbReference.Child("users").Child(userId).Child("totalWinnings").SetValueAsync(newTotal);
+
+            // Update TotalWinningCount
+            int totalWinningCount = PlayerPrefs.GetInt("TotalWinningCount", 0) + 1;
+            PlayerPrefs.SetInt("TotalWinningCount", totalWinningCount);
+            PlayerPrefs.Save();
+            uiController.TotalWinningCountTextUpdate();
+
+            // Update MaximumWinningAmount
+            int currentMax = PlayerPrefs.GetInt("MaximumWinningAmount", 0);
+            if (newWinAmount > currentMax)
+            {
+                PlayerPrefs.SetInt("MaximumWinningAmount", newWinAmount);
+                PlayerPrefs.Save();
+                uiController.MaximumWinningAmountTextUpdate();
+            }
         }
         catch (Exception ex)
         {

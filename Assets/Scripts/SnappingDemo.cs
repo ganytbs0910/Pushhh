@@ -19,7 +19,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
 
         private LevelSystem levelSystem;
         public int remainPullNumber;
-        private const float WinningProbability = 1f;
+        private const float WinningProbability = 0.5f;
         private const float BASE_WIN_PROBABILITY = 0.1f;
         private const int MAX_RESULT = 7;
         [SerializeField] private FirebaseInitializer firebaseInitializer;
@@ -114,13 +114,18 @@ namespace EnhancedScrollerDemos.SnappingDemo
                 UpdateLevelUI();
                 SaveLevelData();
 
+                // Update YourSpinCount
+                int spinCount = PlayerPrefs.GetInt("LocalCounter") + 1;
+                PlayerPrefs.SetInt("LocalCounter", spinCount);
+                PlayerPrefs.Save();
+                uiController.YourSpinCountTextUpdate();
+
                 // Simulate spinning animation
                 await UniTask.Delay(TimeSpan.FromSeconds(1));
 
                 await CreateCardPrefab();
 
                 // Update UI
-                uiController.YourSpinCountTextUpdate();
                 uiController.RemainCreditTextUpdate();
             }
             catch (Exception ex)
@@ -188,7 +193,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
             {
                 await firebaseInitializer.ResetCounter();
                 int winningAmount = await firebaseInitializer.CalculateWinningAmount();
-                await firebaseInitializer.RecordWinning(winningAmount);  // Add this line
+                await firebaseInitializer.RecordWinning(winningAmount);
                 uiController.TotalWinningCountTextUpdate();
                 uiController.NewsTextUpdate(winningAmount);
                 return 0;

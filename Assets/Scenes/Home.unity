@@ -31793,6 +31793,7 @@ MonoBehaviour:
   userIdText: {fileID: 1734079806}
   count: 0
   winningAmount: 0
+  databaseUrl: https://mon-c8c38-default-rtdb.firebaseio.com/
   uiController: {fileID: 8415450043199573482}
 --- !u!1001 &1921677275
 PrefabInstance:
@@ -36425,15 +36426,14 @@ MonoBehaviour:
   lackCreditPanel: {fileID: 853708005}
   winningPanel: {fileID: 941411501}
   newsContent: {fileID: 1235436106}
-  newsTextPrefab: {fileID: 7481673137802385621, guid: 267b938f50ea649bc955b0888658882c, type: 3}
+  newsText: {fileID: 7481673137802385621, guid: 267b938f50ea649bc955b0888658882c, type: 3}
   surprisedImage: {fileID: 50639422}
   remainPullText: {fileID: 1868548085}
   prizeMoneyInHandText: {fileID: 2142570100}
   totalWinningCountText: {fileID: 1291258352}
   yourSpinCountText: {fileID: 1794150638}
   maximumWinningAmountText: {fileID: 1893842074}
-  newsUpdateInterval: 300
-  maxDisplayedNewsItems: 10
+  maxNewsItems: 10
 --- !u!114 &8415450043199573483
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -32,7 +32,6 @@ public class FirebaseInitializer : MonoBehaviour
         {
             await InitializeFirebaseAsync();
             await InitializeUserAsync();
-            LoadCounterFromPlayerPrefs();
             UpdateCounterDisplay();
             incrementButton.onClick.AddListener(IncrementCounter);
             isInitialized = true;
@@ -126,22 +125,11 @@ public class FirebaseInitializer : MonoBehaviour
         }
     }
 
-    private void LoadCounterFromPlayerPrefs()
-    {
-        count = PlayerPrefs.GetInt("LocalCounter", 0);
-    }
 
     private void IncrementCounter()
     {
         count++;
-        SaveCounterToPlayerPrefs();
         UpdateCounterDisplay();
-    }
-
-    private void SaveCounterToPlayerPrefs()
-    {
-        PlayerPrefs.SetInt("LocalCounter", count);
-        PlayerPrefs.Save();
     }
 
     private void UpdateCounterDisplay()
@@ -183,7 +171,6 @@ public class FirebaseInitializer : MonoBehaviour
             }
 
             count = 0;
-            SaveCounterToPlayerPrefs();
             winningAmount = 0;
             UpdateCounterDisplay();
         }
@@ -236,16 +223,8 @@ public class FirebaseInitializer : MonoBehaviour
             int newBalance = currentBalance + winAmount;
             PlayerPrefs.SetInt("PrizeMoneyInHand", newBalance);
             PlayerPrefs.Save();
-
             uiController.PrizeMoneyInHandTextUpdate(newBalance);
-
             await UpdateTotalWinningsAsync(winAmount);
-
-            // Update YourSpinCount
-            int spinCount = PlayerPrefs.GetInt("LocalCounter", 0) + 1;
-            PlayerPrefs.SetInt("LocalCounter", spinCount);
-            PlayerPrefs.Save();
-            uiController.YourSpinCountTextUpdate();
         }
         catch (Exception ex)
         {

@@ -11469,7 +11469,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7481673137802385621, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
       propertyPath: m_text
-      value: "\u30B9\u30D4\u30F3\u3059\u308B\uFF01"
+      value: "\u5360\u3046\uFF01"
       objectReference: {fileID: 0}
     - target: {fileID: 7481673137802385621, guid: 80472332c9d74413f968a2c3a47961c5, type: 3}
       propertyPath: m_sharedMaterial
@@ -17736,8 +17736,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 635}
-  m_SizeDelta: {x: 850, y: 1350}
+  m_AnchoredPosition: {x: 0, y: 477}
+  m_SizeDelta: {x: 700, y: 1000}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1171031979
 MonoBehaviour:
@@ -17797,7 +17797,7 @@ MonoBehaviour:
   m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 850, y: 1350}
+  m_CellSize: {x: 700, y: 1000}
   m_Spacing: {x: 0, y: 0}
   m_Constraint: 0
   m_ConstraintCount: 2
@@ -25045,8 +25045,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 39}
-  m_SizeDelta: {x: -199.99998, y: 150}
+  m_AnchoredPosition: {x: 0, y: 34}
+  m_SizeDelta: {x: -335, y: 124.1401}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1555902079
 MonoBehaviour:
@@ -32908,8 +32908,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -75}
-  m_SizeDelta: {x: -200, y: 175}
+  m_AnchoredPosition: {x: 0, y: -49}
+  m_SizeDelta: {x: -200, y: 143.9683}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1991962908
 MonoBehaviour:

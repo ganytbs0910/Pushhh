@@ -12,16 +12,13 @@ namespace EnhancedScrollerDemos.SnappingDemo
     public class SnappingDemo : MonoBehaviour
     {
         [SerializeField] private Button spinButton;
-        [SerializeField] private TMP_Text resultText;
         [SerializeField] private TMP_Text levelText;
         [SerializeField] private TMP_Text expText;
         [SerializeField] private TMP_Text remainPullText;
 
         private LevelSystem levelSystem;
         public int remainPullNumber;
-        private const float WinningProbability = 0.5f;
-        private const float BASE_WIN_PROBABILITY = 0.1f;
-        private const int MAX_RESULT = 7;
+        private const float WinningProbability = 0.00000001f;
         [SerializeField] private FirebaseInitializer firebaseInitializer;
 
         [SerializeField] private Transform cardParent;
@@ -50,7 +47,7 @@ namespace EnhancedScrollerDemos.SnappingDemo
 
         private void Awake()
         {
-            remainPullNumber = PlayerPrefs.GetInt("remainPullNumber", 10);
+            remainPullNumber = PlayerPrefs.GetInt("remainPullNumber", 3);
             spinButton.onClick.AddListener(SpinButton_OnClick);
             levelSystem = new LevelSystem();
             LoadLevelData();

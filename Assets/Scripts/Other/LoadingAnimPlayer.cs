@@ -5,6 +5,7 @@ using DG.Tweening;
 public class LoadingAnimPlayer : MonoBehaviour
 {
     private const float DURATION = 0.5f;
+    private const float CIRCLE_SIZE = 40f;
 
     void Start()
     {
@@ -13,6 +14,8 @@ public class LoadingAnimPlayer : MonoBehaviour
         {
             var angle = -2 * Mathf.PI * i / circles.Length;
             circles[i].rectTransform.anchoredPosition = Vector2.zero;
+            circles[i].rectTransform.sizeDelta = new Vector2(CIRCLE_SIZE, CIRCLE_SIZE);
+
             Sequence sequence = DOTween.Sequence()
                 .SetLoops(-1, LoopType.Yoyo)
                 .AppendInterval(DURATION / 4)

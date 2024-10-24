@@ -8,14 +8,14 @@ using DG.Tweening;
 using System.Linq;
 using System.Collections.Generic;
 
-// ... (previous classes remain unchanged)
-
 public class MatchingGame : MonoBehaviourPunCallbacks
 {
     [SerializeField] private GameObject gameUI;
     [SerializeField] private GameObject machMakingUI;
     [SerializeField] private UIManager uiManager;
+    [SerializeField] private Button startButton;
     [SerializeField] private Button matchingButton;
+    [SerializeField] private Button leftRoomButton;
     [SerializeField] private string gameVersion = "1.0";
     [SerializeField] private byte maxPlayersPerRoom = 2;
 
@@ -26,8 +26,14 @@ public class MatchingGame : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.ConnectUsingSettings();
+        leftRoomButton.OnClickAsObservable()
+            .Subscribe(_ => PhotonNetwork.LeaveRoom())
+            .AddTo(this);
         matchingButton.OnClickAsObservable()
             .Subscribe(_ => StartMatching())
+            .AddTo(this);
+        startButton.OnClickAsObservable()
+            .Subscribe(_ => StartGame())
             .AddTo(this);
     }
 
@@ -65,19 +71,19 @@ public class MatchingGame : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         isConnecting = false;
-        uiManager.UpdateStatus($"切断されました: {cause}。再試行してください。");
+        uiManager.UpdateStatus($"切断されました: {cause}。\n再試行してください。");
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-        uiManager.UpdateStatus("ランダムな部屋への参加に失敗しました。新しい部屋を作成しています...");
+        uiManager.UpdateStatus("ランダムな部屋への参加に失敗しました。\n新しい部屋を作成しています...");
         PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = maxPlayersPerRoom });
     }
 
     public override void OnJoinedRoom()
     {
         isConnecting = false;
-        uiManager.UpdateStatus($"部屋に参加しました。対戦相手を待っています...");
+        uiManager.UpdateStatus($"部屋に参加しました。\n対戦相手を待っています...");
         uiManager.UpdateRoomCount($"現在のプレイヤー数: {PhotonNetwork.CurrentRoom.PlayerCount}");
 
         if (PhotonNetwork.CurrentRoom.PlayerCount == maxPlayersPerRoom)
@@ -88,7 +94,7 @@ public class MatchingGame : MonoBehaviourPunCallbacks
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        uiManager.UpdateStatus($"プレイヤーが参加しました。{PhotonNetwork.CurrentRoom.PlayerCount} / {maxPlayersPerRoom} プレイヤー。");
+        uiManager.UpdateStatus($"プレイヤーが参加しました。\n{PhotonNetwork.CurrentRoom.PlayerCount} / {maxPlayersPerRoom} プレイヤー。");
 
         if (PhotonNetwork.CurrentRoom.PlayerCount == maxPlayersPerRoom)
         {
@@ -101,7 +107,7 @@ public class MatchingGame : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             uiManager.UpdateStatus("ゲームを開始しています...");
-            PhotonNetwork.LoadLevel("GameScene");
+            PhotonNetwork.LoadLevel("Battle");
         }
     }
 
